@@ -133,6 +133,12 @@
             html:has(input[id^="toggle"]:checked) {
                 overflow: hidden;
             }
+
+            /* 캐릭터이름 */
+            .character > .title {
+                text-align: center;
+                white-space: nowrap;
+            }
             /* 체크시 보임 */
             .filter-bar:has(input[id="Every"]:checked) ~ .display-area > [class*="day"] {
                 display: flex;
@@ -189,6 +195,13 @@
             @media screen and (max-width: calc(400px + 200px)) {
                 .display-area {
                     grid-template-columns: repeat(1, 1fr);
+                }
+            }
+            @media screen and (max-width: calc(380px)) {
+                /* 캐릭터이름 */
+                .character > .title {
+                    font-size: 12px;
+                    white-space: initial;
                 }
             }
         </style>
