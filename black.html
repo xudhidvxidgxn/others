@@ -130,6 +130,9 @@
             input[id^="toggle"]:checked ~ [id*="modal"] {
                 display: flex;
             }
+            html:has(input[id^="toggle"]:checked) {
+                overflow: hidden;
+            }
             /* 체크시 보임 */
             .filter-bar:has(input[id="Every"]:checked) ~ .display-area > [class*="day"] {
                 display: flex;
