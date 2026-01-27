@@ -122,6 +122,7 @@
                 height: 70%;
                 overflow-y: auto;
                 background-color: #fff;
+                animation: pop 0.35s;
             }
             .modal-info,
             .modal-info * {
@@ -129,7 +130,6 @@
             }
             input[id^="toggle"]:checked ~ [id*="modal"] {
                 display: flex;
-                animation: pop 0.3s;
             }
             html:has(input[id^="toggle"]:checked) {
                 overflow: hidden;
@@ -347,6 +347,17 @@
                 </div>
                 <div class="Thursday end">
                     <a href="https://blacktoon.me/webtoon/10802.html" class="Thursday" target="_blank" rel="noopener noreferrer"><div class="title">자취방 누나들</div></a>
+                    <input type="checkbox" name="modal-toggle" id="toggle24" hidden /><label for="toggle24">정보</label>
+                    <div id="modal24">
+                        <label for="toggle24"></label>
+                        <div class="modal-info">
+                            <h1>등장인물</h1>
+                            <div class="character-list">
+                                <div class="character"><div class="title">배다현</div></div>
+                                <div class="character"><div class="title">배다솔</div></div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="Wednesday">
                     <a href="https://blacktoon.me/webtoon/16077.html" class="Wednesday" target="_blank" rel="noopener noreferrer"><div class="title">이세계 용근 기사단장</div></a>
