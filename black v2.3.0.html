@@ -42,7 +42,7 @@
                 margin-top: 20px;
             }
 
-            .filter-bar > [class="day-filter"] {
+            .filter-bar > [class="filter"] {
                 background-color: #e2e2e2;
                 padding: 5px 15px;
                 border-radius: 3em;
@@ -88,7 +88,7 @@
             [class*="short"] .title {
                 text-decoration: underline;
             }
-            label[for*="toggle"] {
+            input[name="modal-toggle"] ~ label[for*="toggle"] {
                 margin-top: 10px;
                 padding: 5px 15px;
                 font-weight: 700;
@@ -96,16 +96,49 @@
                 background-color: #fff;
                 box-shadow: 2px 4px 2px #b9b9b9;
             }
+
             [id*="modal"] {
-                display: none;
+                display: flex;
                 position: fixed;
+                align-items: center;
+                justify-content: center;
                 top: 0;
                 left: 0;
                 width: 100vw;
                 height: 100vh;
                 background-color: rgb(0, 0, 0, 0.7);
+
+                visibility: hidden;
+                z-index: 100;
             }
-            [id*="modal"] label {
+            .modal-info {
+                display: flex;
+                flex-direction: column;
+                transform-origin: center;
+                padding: 35px;
+                width: 1280px;
+                height: 70vh;
+                overflow-y: auto;
+                background-color: #fff;
+            }
+            /* .modal-info {
+                display: flex;
+                flex-direction: column;
+                margin: auto;
+                padding: 35px;
+                width: 1280px;
+                height: 70vh;
+                overflow-y: auto;
+                background-color: #fff;
+            } */
+            .modal-info,
+            .modal-info * {
+                z-index: 1000;
+            }
+            input[id^="toggle"]:checked ~ [id*="modal"] {
+                visibility: visible;
+            }
+            input[id^="toggle"]:checked ~ [id*="modal"] label {
                 position: fixed;
                 top: 0;
                 left: 0;
@@ -113,24 +146,29 @@
                 height: 100vh;
                 background-color: initial;
             }
-            .modal-info {
-                display: flex;
-                flex-direction: column;
-                margin: auto;
+            input[id^="toggle"]:checked ~ [id*="modal"] .modal-info {
+                animation: pop 0.2s forwards !important;
+            }
+            input[id^="toggle"]:not(:checked) ~ [id*="modal"] {
+                transition-delay: 0.2s;
+            }
+            input[id^="toggle"]:not(:checked) ~ [id*="modal"] .modal-info {
+                animation: popOut 0.2s forwards !important;
+            }
+            /*input[id^="toggle"]:not(:checked) ~ [id*="modal"] .modal-info {
+                animation: popOut 0.3s;
+            }
+            input[id^="toggle"]:checked ~ [id*="modal"] .modal-info {}
                 padding: 35px;
                 width: 1280px;
-                height: 70%;
-                overflow-y: auto;
-                background-color: #fff;
-                animation: pop 0.35s;
+                height: 70vh;
+                animation: pop 0.3s forwards;
             }
-            .modal-info,
-            .modal-info * {
-                z-index: 100;
-            }
-            input[id^="toggle"]:checked ~ [id*="modal"] {
-                display: flex;
-            }
+
+            input[id^="toggle"]:not(:checked) ~ [id*="modal"] .modal-info {
+                animation: pop 0.3s forwards reverse;
+            }*/
+
             html:has(input[id^="toggle"]:checked) {
                 overflow: hidden;
             }
@@ -139,6 +177,34 @@
             .character > .title {
                 text-align: center;
                 white-space: nowrap;
+            }
+            .character > .episodes {
+                width: 100%;
+                margin-top: 10px;
+                color: #000;
+                list-style-type: none;
+                text-align: center;
+                border-radius: 5px;
+                background-color: #fff;
+                box-shadow: 1px 3px 4px #b9b9b9;
+                overflow: hidden;
+            }
+            .episodes .episode {
+                width: 100%;
+                padding: 5px 0;
+                border-bottom: 2px solid #e2e2e2;
+            }
+            .episodes > a:last-of-type li {
+                border-bottom: none;
+            }
+            .good {
+                background-color: rgb(0, 0, 255, 0.3);
+            }
+            .first {
+                background-color: rgb(255, 0, 0, 0.3);
+            }
+            .good.first {
+                background-color: rgb(187, 119, 221, 0.3);
             }
             /* 체크시 보임 */
             .filter-bar:has(input[id="Every"]:checked) ~ .display-area > [class*="day"] {
@@ -209,7 +275,6 @@
             @keyframes pop {
                 0% {
                     transform: scale(0);
-                    opacity: 0;
                 }
 
                 50% {
@@ -218,7 +283,19 @@
 
                 100% {
                     transform: scale(1);
-                    opacity: 1;
+                }
+            }
+            @keyframes popOut {
+                0% {
+                    transform: scale(1);
+                }
+
+                50% {
+                    transform: scale(1.05);
+                }
+
+                100% {
+                    transform: scale(0);
                 }
             }
         </style>
@@ -228,32 +305,32 @@
             <a href="https://blacktoon.me" target="_blank" rel="noopener noreferrer">
                 <div><h1>Black List</h1></div>
             </a>
-            <h3 class="today">(오늘 날짜)</h3>
+            <h3 id="today">(오늘 날짜)</h3>
             <div class="filter-bar">
-                <input type="radio" name="day-filter" id="Every" checked hidden />
-                <label for="Every" class="day-filter">전체</label>
-                <input type="radio" name="day-filter" id="Mon" hidden />
-                <label for="Mon" class="day-filter">월요일</label>
-                <input type="radio" name="day-filter" id="Tue" hidden />
-                <label for="Tue" class="day-filter">화요일</label>
-                <input type="radio" name="day-filter" id="Wed" hidden />
-                <label for="Wed" class="day-filter">수요일</label>
-                <input type="radio" name="day-filter" id="Thur" hidden />
-                <label for="Thur" class="day-filter">목요일</label>
-                <input type="radio" name="day-filter" id="Fri" hidden />
-                <label for="Fri" class="day-filter">금요일</label>
-                <input type="radio" name="day-filter" id="Sat" hidden />
-                <label for="Sat" class="day-filter">토요일</label>
-                <input type="radio" name="day-filter" id="Sun" hidden />
-                <label for="Sun" class="day-filter">일요일</label>
+                <input type="radio" name="filter" id="Every" checked hidden />
+                <label for="Every" class="filter">전체</label>
+                <input type="radio" name="filter" id="Mon" hidden />
+                <label for="Mon" class="filter">월요일</label>
+                <input type="radio" name="filter" id="Tue" hidden />
+                <label for="Tue" class="filter">화요일</label>
+                <input type="radio" name="filter" id="Wed" hidden />
+                <label for="Wed" class="filter">수요일</label>
+                <input type="radio" name="filter" id="Thur" hidden />
+                <label for="Thur" class="filter">목요일</label>
+                <input type="radio" name="filter" id="Fri" hidden />
+                <label for="Fri" class="filter">금요일</label>
+                <input type="radio" name="filter" id="Sat" hidden />
+                <label for="Sat" class="filter">토요일</label>
+                <input type="radio" name="filter" id="Sun" hidden />
+                <label for="Sun" class="filter">일요일</label>
             </div>
             <div class="filter-bar">
                 <input type="radio" name="ongoing-filter" id="on-Every" hidden />
-                <label for="on-Every" class="day-filter">전체</label>
+                <label for="on-Every" class="filter">전체</label>
                 <input type="radio" name="ongoing-filter" id="on-going" checked hidden />
-                <label for="on-going" class="day-filter">연재중</label>
+                <label for="on-going" class="filter">연재중</label>
                 <input type="radio" name="ongoing-filter" id="on-end" hidden />
-                <label for="on-end" class="day-filter">완결</label>
+                <label for="on-end" class="filter">완결</label>
             </div>
             <section class="display-area">
                 <div class="Monday">
@@ -269,21 +346,56 @@
                     <a href="https://blacktoon.me/webtoon/11737.html" class="Thursday" target="_blank" rel="noopener noreferrer"><div class="title">아카데미 야겜에 빙의했다</div></a>
                     <input type="checkbox" name="modal-toggle" id="toggle4" hidden /><label for="toggle4">정보</label>
                     <div id="modal4">
-                        <label for="toggle4"></label>
+                        <label for="toggle4" class="label"></label>
                         <div class="modal-info">
                             <h1>등장인물</h1>
                             <div class="character-list">
-                                <div class="character"><div class="title">루시</div></div>
-                                <div class="character"><div class="title">루미</div></div>
-                                <div class="character"><div class="title">문수린</div></div>
-                                <div class="character"><div class="title">남다은</div></div>
-                                <div class="character"><div class="title">앨리스</div></div>
-                                <div class="character"><div class="title">릴리아나</div></div>
-                                <div class="character"><div class="title">임솔</div></div>
-                                <div class="character"><div class="title">백아영</div></div>
-                                <div class="character"><div class="title">스칼렛</div></div>
-                                <div class="character"><div class="title">레베카</div></div>
-                                <div class="character"><div class="title">아이린</div></div>
+                                <div class="character">
+                                    <div class="title">루시</div>
+                                    <ul class="episodes">
+                                        <a href="#"><li class="episode">2화</li></a>
+                                    </ul>
+                                </div>
+                                <div class="character">
+                                    <div class="title">루미</div>
+                                    <ul class="episodes"></ul>
+                                </div>
+                                <div class="character">
+                                    <div class="title">문수린</div>
+                                    <ul class="episodes"></ul>
+                                </div>
+                                <div class="character">
+                                    <div class="title">남다은</div>
+                                    <ul class="episodes"></ul>
+                                </div>
+                                <div class="character">
+                                    <div class="title">앨리스</div>
+                                    <ul class="episodes"></ul>
+                                </div>
+                                <div class="character">
+                                    <div class="title">릴리아나</div>
+                                    <ul class="episodes"></ul>
+                                </div>
+                                <div class="character">
+                                    <div class="title">임솔</div>
+                                    <ul class="episodes"></ul>
+                                </div>
+                                <div class="character">
+                                    <div class="title">백아영</div>
+                                    <ul class="episodes"></ul>
+                                </div>
+                                <div class="character">
+                                    <div class="title">스칼렛</div>
+                                    <ul class="episodes"></ul>
+                                </div>
+                                <div class="character">
+                                    <div class="title">레베카</div>
+                                    <ul class="episodes"></ul>
+                                </div>
+                                <div class="character">
+                                    <div class="title">아이린</div>
+                                    <ul class="episodes"></ul>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -347,9 +459,9 @@
                 </div>
                 <div class="Thursday end">
                     <a href="https://blacktoon.me/webtoon/10802.html" class="Thursday" target="_blank" rel="noopener noreferrer"><div class="title">자취방 누나들</div></a>
-                    <input type="checkbox" name="modal-toggle" id="toggle24" hidden /><label for="toggle24">정보</label>
+                    <input type="checkbox" name="modal-toggle" id="toggle24" hidden checked /><label for="toggle24">정보</label>
                     <div id="modal24">
-                        <label for="toggle24"></label>
+                        <label for="toggle24" class="label"></label>
                         <div class="modal-info">
                             <h1>등장인물</h1>
                             <div class="character-list">
@@ -418,11 +530,12 @@
                 const dateStr = `${year}-${month}-${day}`;
 
                 // 요일 (ddd)
-                const days = ["Sun", "Mon", "Tue", "Wed", "Thur", "Fri", "Sat"];
+                const days = ["일", "월", "화", "수", "목", "금", "토"];
                 const dayName = days[today.getDay()];
+                /*const dayName = days[today.getDay()]+"요일";*/
 
                 // h5에 삽입
-                document.querySelector(".today").textContent = `${dateStr} (${dayName})`;
+                document.getElementById("today").textContent = `${dateStr} (${dayName})`;
 
                 const displayArea = document.querySelector(".display-area");
                 const items = Array.from(displayArea.children);

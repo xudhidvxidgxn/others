@@ -1,0 +1,34 @@
+def fmt(x, f=False, a=1):
+    if f:
+        return round(x * a, 2)
+    s = f"{x*a:,.2f}"  # 우선 소수 둘째 자리까지 반올림해서 문자열로
+    s = s.rstrip("0")  # 끝의 0 제거
+    s = s.rstrip(".")  # 소수점만 남으면 제거
+    return s
+
+
+def ex_fmt(x, a=4):
+    x = str(x).replace(",", "")
+    x = x[0 : x.find(".")] if "." in x else x  # 소수점 안전 처리
+    x = x[::-1]
+
+    # a(기본 : 4)자씩 자르기 + 마지막 조각 보존
+    x1 = []
+    for i in range(0, len(x), a):
+        chunk = x[i : i + a]
+        if chunk:  # 빈 문자열이 아닌 경우만 추가
+            x1.append(chunk)
+
+    x1.reverse()
+    x1 = list(map(lambda chunk: (chunk[::-1].lstrip("0") or "0000"), x1))
+    res = " ".join(x1)
+    return res
+
+
+defaultValue = 10**10
+while True:
+    try:
+        a = int(input(f"숫자를 입력 (기본값: {fmt(defaultValue)} ({ex_fmt(defaultValue)})) | : ") or defaultValue)
+    except:
+        a = defaultValue
+    print(f"{fmt(a)} \n({ex_fmt(a)})\n")
