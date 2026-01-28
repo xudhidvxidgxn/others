@@ -5,6 +5,9 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Black</title>
         <style>
+            :root {
+                --animation_time: 0.3s;
+            }
             * {
                 padding: 0;
                 margin: 0;
@@ -147,13 +150,13 @@
                 background-color: initial;
             }
             input[id^="toggle"]:checked ~ [id*="modal"] .modal-info {
-                animation: pop 0.2s forwards !important;
+                animation: pop var(--animation_time) forwards !important;
             }
             input[id^="toggle"]:not(:checked) ~ [id*="modal"] {
-                transition-delay: 0.2s;
+                transition-delay: var(--animation_time);
             }
             input[id^="toggle"]:not(:checked) ~ [id*="modal"] .modal-info {
-                animation: popOut 0.2s forwards !important;
+                animation: popOut var(--animation_time) forwards !important;
             }
             /*input[id^="toggle"]:not(:checked) ~ [id*="modal"] .modal-info {
                 animation: popOut 0.3s;
@@ -193,18 +196,19 @@
                 width: 100%;
                 padding: 5px 0;
                 border-bottom: 2px solid #e2e2e2;
+                font-weight: 600;
             }
             .episodes > a:last-of-type li {
                 border-bottom: none;
             }
             .good {
-                background-color: rgb(0, 0, 255, 0.3);
+                background-color: rgba(255, 255, 0, 0.4);
             }
             .first {
-                background-color: rgb(255, 0, 0, 0.3);
+                background-color: rgb(255, 0, 255, 0.4);
             }
             .good.first {
-                background-color: rgb(187, 119, 221, 0.3);
+                background: linear-gradient(to right, rgba(255, 0, 255, 0.4), rgba(255, 255, 0, 0.4));
             }
             /* 체크시 보임 */
             .filter-bar:has(input[id="Every"]:checked) ~ .display-area > [class*="day"] {
@@ -353,7 +357,9 @@
                                 <div class="character">
                                     <div class="title">루시</div>
                                     <ul class="episodes">
-                                        <a href="#"><li class="episode">2화</li></a>
+                                        <a href="#"><li class="episode good first">2화</li></a>
+                                        <a href="#"><li class="episode good">2화</li></a>
+                                        <a href="#"><li class="episode first">2화</li></a>
                                     </ul>
                                 </div>
                                 <div class="character">
@@ -459,7 +465,7 @@
                 </div>
                 <div class="Thursday end">
                     <a href="https://blacktoon.me/webtoon/10802.html" class="Thursday" target="_blank" rel="noopener noreferrer"><div class="title">자취방 누나들</div></a>
-                    <input type="checkbox" name="modal-toggle" id="toggle24" hidden checked /><label for="toggle24">정보</label>
+                    <input type="checkbox" name="modal-toggle" id="toggle24" hidden /><label for="toggle24">정보</label>
                     <div id="modal24">
                         <label for="toggle24" class="label"></label>
                         <div class="modal-info">
@@ -502,7 +508,20 @@
                 <!--<div class="day short end">
                     <a href="https://blacktoon.me/webtoon/-----.html" class="day" target="_blank" rel="noopener noreferrer"><div class="title"></div></a>
                     <input type="checkbox" name="modal-toggle" id="toggle$" hidden /><label for="toggle$">정보</label>
-                    <div id="modal$"><label for="toggle$"></label></div>
+                    <div id="modal$">
+                        <label for="toggle$" class="label"></label>
+                        <div class="modal-info">
+                            <h1>등장인물</h1>
+                            <div class="character-list">
+                                <div class="character">
+                                    <div class="title"></div>
+                                    <ul class="episodes">
+                                        <a href="#"><li class="episode good first"></li></a>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>-->
             </section>
         </div>
@@ -563,6 +582,9 @@
 
                 // 정렬된 순서대로 다시 배치
                 items.forEach((item) => displayArea.appendChild(item));
+            });
+            window.addEventListener(`load`, () => {
+                document.querySelector(`h1`).textContent = `${document.querySelector(`h1`).textContent} (${Array.from(document.querySelectorAll(`.display-area > div`)).length})`;
             });
         </script>
     </body>
