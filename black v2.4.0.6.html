@@ -596,6 +596,7 @@
             });
             window.addEventListener(`load`, () => {
                 document.querySelector(`h1`).textContent = `${document.querySelector(`h1`).textContent} (${Array.from(document.querySelectorAll(`.display-area > div`)).length})`;
+                document.querySelector("HTML").scrollTo({top: 0, behavior: "smooth"});
             });
         </script>
     </body>
