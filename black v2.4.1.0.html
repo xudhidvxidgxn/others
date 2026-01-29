@@ -6,7 +6,7 @@
         <title>Black</title>
         <style>
             :root {
-                --animation_time: 0.2s;
+                --animation_time: 0.3s;
             }
             * {
                 padding: 0;
@@ -151,12 +151,14 @@
             }
             input[id^="toggle"]:checked ~ [id*="modal"] .modal-info {
                 animation: pop var(--animation_time) forwards !important;
+                animation-timing-function: ease-in-out;
             }
             input[id^="toggle"]:not(:checked) ~ [id*="modal"] {
                 transition-delay: var(--animation_time);
             }
             input[id^="toggle"]:not(:checked) ~ [id*="modal"] .modal-info {
                 animation: popOut var(--animation_time) forwards !important;
+                animation-timing-function: ease-in-out;
             }
             /*input[id^="toggle"]:not(:checked) ~ [id*="modal"] .modal-info {
                 animation: popOut 0.3s;
@@ -280,19 +282,13 @@
                 0% {
                     transform: scale(0);
                 }
-                50% {
-                    transform: scale(0.9);
-                }
                 100% {
-                    transform: scale(0.85);
+                    transform: scale(0.8);
                 }
             }
             @keyframes popOut {
                 0% {
-                    transform: scale(0.85);
-                }
-                50% {
-                    transform: scale(0.9);
+                    transform: scale(0.8);
                 }
                 100% {
                     transform: scale(0);
