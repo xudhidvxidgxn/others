@@ -25,10 +25,10 @@ def ex_fmt(x, a=4):
     return res
 
 
-defaultValue = 10**10
+default = 10**10
 while True:
     try:
-        a = int(input(f"숫자를 입력 (기본값: {fmt(defaultValue)} ({ex_fmt(defaultValue)})) | : ") or defaultValue)
+        a = int(input(f"숫자를 입력 (기본값: {fmt(default)} ({ex_fmt(default)})) | : ") or default)
     except:
-        a = defaultValue
+        a = default
     print(f"{fmt(a)} \n({ex_fmt(a)})\n")
