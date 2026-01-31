@@ -20,7 +20,7 @@ def ex_fmt(x, a=4):
             x1.append(chunk)
 
     x1.reverse()
-    x1 = list(map(lambda chunk: (chunk[::-1].lstrip("0") or "0000"), x1))
+    x1 = list(map(lambda chunk: (chunk[::-1].lstrip("0") or "0"*a), x1))
     res = " ".join(x1)
     return res
 
@@ -32,3 +32,4 @@ while True:
     except:
         a = default
     print(f"{fmt(a)} \n({ex_fmt(a)})\n")
+    print(f"({ex_fmt(a, 2)})\n")
