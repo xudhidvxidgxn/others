@@ -73,6 +73,7 @@
             }
             .display-area div[class*="day"],
             .character-list .character {
+                position: relative;
                 flex-direction: column;
                 align-items: center;
                 width: 100%;
@@ -80,6 +81,9 @@
                 border-radius: 15px;
                 background-color: #e2e2e2;
                 box-shadow: 1px 1px 5px #b9b9b9;
+            }
+            .display-area div[class*="day"] {
+                margin-bottom: 17.5px;
             }
             .title {
                 font-size: 24px;
@@ -92,12 +96,17 @@
                 text-decoration: underline;
             }
             input[name="modal-toggle"] ~ label[for*="toggle"] {
-                margin-top: 10px;
+                position: absolute;
+                /*margin-top: 10px;*/
+                border-radius: 7.5px;
+                width: 100%;
+                text-align: center;
+                bottom: 0;
                 padding: 5px 15px;
                 font-weight: 700;
-                border-radius: 15px;
                 background-color: #fff;
                 box-shadow: 2px 4px 2px #b9b9b9;
+                transform: translateY(57.5%);
             }
 
             [id*="modal"] {
@@ -178,8 +187,7 @@
                 overflow: hidden;
             }
 
-            /* 캐릭터이름 */
-            .character > .title {
+            .title {
                 text-align: center;
             }
             .character > .episodes {
@@ -1118,9 +1126,7 @@
                             <h1>등장인물</h1>
                             <div class="character-list">
                                 <div class="character">
-                                    <div class="title">
-                                        추가 예정
-                                    </div>
+                                    <div class="title">추가 예정</div>
                                     <ul class="episodes">
                                         <a href="https://blacktoon.me/webtoons/16077/0000000.html"><li class="episode good first">n화</li></a>
                                     </ul>
@@ -1138,9 +1144,7 @@
                             <h1>등장인물</h1>
                             <div class="character-list">
                                 <div class="character">
-                                    <div class="title">
-                                        추가 예정
-                                    </div>
+                                    <div class="title">추가 예정</div>
                                     <ul class="episodes">
                                         <a href="https://blacktoon.me/webtoons/12238/0000000.html"><li class="episode good first">n화</li></a>
                                     </ul>
@@ -1158,9 +1162,7 @@
                             <h1>등장인물</h1>
                             <div class="character-list">
                                 <div class="character">
-                                    <div class="title">
-                                        추가 예정
-                                    </div>
+                                    <div class="title">추가 예정</div>
                                     <ul class="episodes">
                                         <a href="https://blacktoon.me/webtoons/15519/0000000.html"><li class="episode good first">n화</li></a>
                                     </ul>
@@ -1178,9 +1180,7 @@
                             <h1>등장인물</h1>
                             <div class="character-list">
                                 <div class="character">
-                                    <div class="title">
-                                        추가 예정
-                                    </div>
+                                    <div class="title">추가 예정</div>
                                     <ul class="episodes">
                                         <a href="https://blacktoon.me/webtoons/18309/0000000.html"><li class="episode good first">n화</li></a>
                                     </ul>
@@ -1198,9 +1198,7 @@
                             <h1>등장인물</h1>
                             <div class="character-list">
                                 <div class="character">
-                                    <div class="title">
-                                        추가 예정
-                                    </div>
+                                    <div class="title">추가 예정</div>
                                     <ul class="episodes">
                                         <a href="https://blacktoon.me/webtoons/18175/0000000.html"><li class="episode good first">n화</li></a>
                                     </ul>
@@ -1218,9 +1216,7 @@
                             <h1>등장인물</h1>
                             <div class="character-list">
                                 <div class="character">
-                                    <div class="title">
-                                        추가 예정
-                                    </div>
+                                    <div class="title">추가 예정</div>
                                     <ul class="episodes">
                                         <a href="https://blacktoon.me/webtoons/18455/0000000.html"><li class="episode good first">n화</li></a>
                                     </ul>
@@ -1238,9 +1234,7 @@
                             <h1>등장인물</h1>
                             <div class="character-list">
                                 <div class="character">
-                                    <div class="title">
-                                        추가 예정
-                                    </div>
+                                    <div class="title">추가 예정</div>
                                     <ul class="episodes">
                                         <a href="https://blacktoon.me/webtoons/18756/0000000.html"><li class="episode good first">n화</li></a>
                                     </ul>
@@ -1258,9 +1252,7 @@
                             <h1>등장인물</h1>
                             <div class="character-list">
                                 <div class="character">
-                                    <div class="title">
-                                        추가 예정
-                                    </div>
+                                    <div class="title">추가 예정</div>
                                     <ul class="episodes">
                                         <a href="https://blacktoon.me/webtoons/9098/0000000.html"><li class="episode good first">n화</li></a>
                                     </ul>
