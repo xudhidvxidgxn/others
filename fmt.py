@@ -32,4 +32,3 @@ while True:
     except:
         a = default
     print(f"{fmt(a)} \n({ex_fmt(a)})\n")
-    print(f"({ex_fmt(a, 2)})\n")
