@@ -65,13 +65,13 @@
                 margin-top: 30px;
                 margin-bottom: 20px;
             }
-            .display-area div[class*="day"] {
+            .display-area > [class*="day"] {
                 display: none;
             }
             .character-list .character {
                 display: flex;
             }
-            .display-area div[class*="day"],
+            .display-area > [class*="day"],
             .character-list .character {
                 position: relative;
                 flex-direction: column;
@@ -219,6 +219,11 @@
             .good.first {
                 background: linear-gradient(to right, rgba(255, 0, 255, 0.4), rgba(255, 255, 0, 0.4));
             }
+
+            [class*="day"] > a {
+                z-index: 10;
+            }
+
             /* 체크시 보임 */
             .filter-bar:has(input[id="Every"]:checked) ~ .display-area > [class*="day"] {
                 display: flex;
