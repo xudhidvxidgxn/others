@@ -2258,7 +2258,7 @@
                 /*const dayName = days[today.getDay()]+"요일";*/
 
                 // h5에 삽입
-                document.getElementById("today").textContent = `${dateStr} (${dayName})`;
+                document.getElementById("today").textContent = `${dateStr} (${dayName}) ${String(today.getHours()).padStart(2, "0")}시`;
 
                 const items = Array.from(displayArea.children);
 
