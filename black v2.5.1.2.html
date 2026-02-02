@@ -2287,7 +2287,8 @@
                 items.forEach((item) => displayArea.appendChild(item));
             });
             window.addEventListener(`load`, () => {
-                document.querySelector(`h1`).textContent = `${document.querySelector(`h1`).textContent} (${Array.from(document.querySelectorAll(`.display-area > div`)).length})`;
+                const displaiesArr = Array.from(document.querySelectorAll(".display-area > div"));
+                document.querySelector(`h1`).textContent = `${document.querySelector(`h1`).textContent} (${displaiesArr.length})`;
                 document.querySelector("HTML").scrollTo({ top: 0, behavior: "smooth" });
                 Array.from(document.querySelectorAll("a")).forEach((element) => {
                     element.setAttribute("target", "_blank");
