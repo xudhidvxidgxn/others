@@ -2246,7 +2246,7 @@
                 const min = String(today.getMinutes()).padStart(2, "0");
                 const sec = String(today.getSeconds()).padStart(2, "0");
                 
-                const timeStr = `${hour}시  ${min}분`;
+                const timeStr = `${hour}시  ${min}분 $(sec)초`;
                 
                 const result = `${dateStr} (${dayName}) ${timeStr}`;
 
