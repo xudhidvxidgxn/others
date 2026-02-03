@@ -2229,9 +2229,33 @@
             </section>
         </div>
         <script>
+            function displaysetDate() {
+                const today = new Date();
+                // yyyy-mm-dd
+                const year = today.getFullYear();
+                const month = String(today.getMonth() + 1).padStart(2, "0");
+                const day = String(today.getDate()).padStart(2, "0");
+                const dateStr = `${year}-${month}-${day}`;
+                
+                // 요일 (ddd)
+                const days = ["일", "월", "화", "수", "목", "금", "토"];
+                const dayName = days[today.getDay()];
+                /*const dayName = days[today.getDay()]+"요일";*/
+                
+                const hour = String(today.getHours()).padStart(2, "0");
+                const min = String(today.getMinutes()).padStart(2, "0");
+                
+                const timeStr = `${hour}시  ${min}분`;
+                
+                const result = `${dateStr} (${dayName}) ${timeStr}`;
+
+                // h5에 삽입
+                document.getElementById("today").textContent = result;
+            }
             const displayArea = document.querySelector(".display-area");
             window.addEventListener("load", () => {
-                const today = new Date().getDay();
+                const today = new Date();
+                const getday = today.getDay();
                 const days = {
                     0: "Sun",
                     1: "Mon",
@@ -2241,26 +2265,10 @@
                     5: "Fri",
                     6: "Sat",
                 };
-                document.getElementById(days[today]).checked = true;
-            });
-            window.addEventListener("load", () => {
-                const today = new Date();
+                document.getElementById(days[getday]).checked = true;
 
-                const datedisplay = setInterval(() => {
-                    // yyyy-mm-dd
-                    const year = today.getFullYear();
-                    const month = String(today.getMonth() + 1).padStart(2, "0");
-                    const day = String(today.getDate()).padStart(2, "0");
-                    const dateStr = `${year}-${month}-${day}`;
-
-                    // 요일 (ddd)
-                    const days = ["일", "월", "화", "수", "목", "금", "토"];
-                    const dayName = days[today.getDay()];
-                    /*const dayName = days[today.getDay()]+"요일";*/
-
-                    // h5에 삽입
-                    document.getElementById("today").textContent = `${dateStr} (${dayName}) ${String(today.getHours()).padStart(2, "0")}시`;
-                }, 1000);
+                displaysetDate();
+                const datedisplay = setInterval(displaysetDate, 1000);
 
                 const items = Array.from(displayArea.children);
 
