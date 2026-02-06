@@ -7,7 +7,7 @@ def fmt(x, f=False, a=1):
     return s
 
 
-def ex_fmt(x, a=4):
+def ex_fmt(x, b=False, a=4):
     x = str(x).replace(",", "")
     x = x[0 : x.find(".")] if "." in x else x  # 소수점 안전 처리
     x = x[::-1]
@@ -20,7 +20,10 @@ def ex_fmt(x, a=4):
             x1.append(chunk)
 
     x1.reverse()
-    x1 = list(map(lambda chunk: (chunk[::-1].lstrip("0") or "0"*a), x1))
+    if b:
+        x1 = list(map(lambda chunk: (chunk[::-1] or "0000"), x1))
+    else:
+        x1 = list(map(lambda chunk: (chunk[::-1].lstrip("0") or "0000"), x1))
     res = " ".join(x1)
     return res
 
