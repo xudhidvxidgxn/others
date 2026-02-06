@@ -34,4 +34,4 @@ while True:
         a = int(input(f"숫자를 입력 (기본값: {fmt(default)} ({ex_fmt(default)})) | : ") or default)
     except:
         a = default
-    print(f"{fmt(a)} \n({ex_fmt(a)})\n")
+    print(f"{fmt(a)} \n({ex_fmt(a)})\n({ex_fmt(a, True)})\n")
