@@ -36,7 +36,7 @@ def ex_fmt(x, b=False, a=4):
 
 
 def main():
-    ii = 0
+    astack = 0
     r = random.random
     while True:
         a = input("시도 횟수 입력 | : ") or 1
@@ -50,25 +50,27 @@ def main():
         print(f"확률 : {chanc}")
         input("go?")
         break
+    print("시도 중...")
     for i in range(a):
-        i = 0
+        stack = 0
         chan = r()
-        # print("시도 중...")
         while True:
             if chan < chanc:
                 # print("성공!")
                 break
             else:
                 chan = r()
-                i += 1
+                stack += 1
                 # print(ex_fmt(i, True))
-        ii += i
-    res = ii / a
+        astack += stack
+        #print(f"완료! ({ex_fmt(i+1)}) ({ex_fmt(i+1, True)})")
+    res = astack / a
     res1 = fmt(res)
     print()
     print(f"확률 : {chanc} ({chanc*100}%)")
     print(f"평균 시도 : {res1} ({ex_fmt(res1)}) ({ex_fmt(res1, True)})")
-    print(f"전체 시도 : {fmt(ii)} ({ex_fmt(ii)}) ({ex_fmt(ii, True)})")
+    print()
+    print(f"전체 시도 : {fmt(astack)} ({ex_fmt(astack)}) ({ex_fmt(astack, True)})")
 
 
 while True:
