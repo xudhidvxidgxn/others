@@ -1,9 +1,9 @@
 import random
 
 
-def fmt(x, f=False, a=1):
+def fmt(x, f=False):
     if f:
-        return round(x * a, 2)
+        return round(x, 2)
     s = f"{x*a:,.2f}"  # 우선 소수 둘째 자리까지 반올림해서 문자열로
     s = s.rstrip("0")  # 끝의 0 제거
     s = s.rstrip(".")  # 소수점만 남으면 제거
