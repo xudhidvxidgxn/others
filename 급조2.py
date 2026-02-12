@@ -63,7 +63,7 @@ def main():
                 stack += 1
                 # print(ex_fmt(i, True))
         astack += stack
-        #print(f"완료! ({ex_fmt(i+1)}) ({ex_fmt(i+1, True)})")
+        # print(f"완료! ({ex_fmt(i+1)}) ({ex_fmt(i+1, True)})")
     res = astack / a
     res1 = fmt(res)
     print()
@@ -73,5 +73,4 @@ def main():
     print(f"전체 시도 : {fmt(astack)} ({ex_fmt(astack)}) ({ex_fmt(astack, True)})")
 
 
-while True:
-    main()
+main()
