@@ -44,7 +44,7 @@ def main():
             a = int(a)
         except ValueError:
             continue
-        print(f"시도 횟수 : {ex_fmt(a)}회")
+        print(f"시도 횟수 : {ex_fmt(a)}회 ({ex_fmt(a, True)})")
         chanc = input("\n확률 입력(%) | : ") or 1
         chanc = float(chanc.rstrip("%")) / 100
         print(f"확률 : {chanc}")
