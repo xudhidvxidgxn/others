@@ -63,7 +63,6 @@ def main():
     print(f"확률 : {chanc} ({chanc*100}%)")
     print(f"평균 시도 : {res1} ({ex_fmt(res1)}) ({ex_fmt(res1, True)})")
     print(f"전체 시도 : {fmt(ii)} ({ex_fmt(ii)}) ({ex_fmt(ii, True)})")
-    print("-"*10)
 
 
 while True:
