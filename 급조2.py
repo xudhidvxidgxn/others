@@ -11,8 +11,9 @@ def fmt(x, f=False, a=1):
 
 
 def ex_fmt(x, b=False, a=4):
+    #x = x[0 : x.find(".")] if "." in x else x  # 소수점 안전 처리
     x = str(x).replace(",", "")
-    x = x[0 : x.find(".")] if "." in x else x  # 소수점 안전 처리
+    x = str(round(float(x)))
     x = x[::-1]
 
     # a자씩 자르기 + 마지막 조각 보존
@@ -49,13 +50,15 @@ def main():
     for i in range(a):
         i = 0
         chan = r()
+        print("시도 중...")
         while True:
             if chan < chanc:
+                print("성공!")
                 break
             else:
                 chan = r()
                 i += 1
-                print(ex_fmt(i, True))
+                #print(ex_fmt(i, True))
         ii += i
     res = ii / a
     res1 = fmt(res)
