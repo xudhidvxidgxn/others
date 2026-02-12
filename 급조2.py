@@ -31,39 +31,40 @@ def ex_fmt(x, b=False, a=4):
     return res
 
 
-ii = 0
-r = random.random
-while True:
-    # try:
-    a = input("시도 횟수 입력 | : ") or 1
-    a = int(a)
-    print(f"시도 횟수 : {a}회")
-    chanc = input("\n확률 입력(%) | : ") or 1
-    print(chanc)
-    if not (type(chanc) == float or type(chanc) == int):
-        if "%" in chanc and not (chanc == float()):
-            chanc = float(chanc.rstrip("%")) / 100
-    else:
-        chanc = float(chanc) / 100
-    print(f"확률 : {chanc}")
-    input("go?")
-    break
-# except ValueError:
-#    continue
-for i in range(a):
-    i = 0
-    chan = r()
+def main():
+    ii = 0
+    r = random.random
     while True:
-        if chan < chanc:
-            break
-        else:
-            chan = r()
-            i += 1
-            print(ex_fmt(i))
-    ii += i
-res = ii / a
-res1 = fmt(res)
-print()
-print(f"확률 : {chanc} ({chanc*100}%)")
-print(f"평균 시도 : {res1} ({ex_fmt(res1)}) ({ex_fmt(res1, True)})")
-print(f"전체 시도 : {fmt(ii)} ({ex_fmt(ii)}) ({ex_fmt(ii, True)})")
+        # try:
+        a = input("시도 횟수 입력 | : ") or 1
+        a = int(a)
+        print(f"시도 횟수 : {a}회")
+        chanc = input("\n확률 입력(%) | : ") or 1
+        chanc = float(chanc.rstrip("%")) / 100
+        print(f"확률 : {chanc}")
+        input("go?")
+        break
+    # except ValueError:
+    #    continue
+    for i in range(a):
+        i = 0
+        chan = r()
+        while True:
+            if chan < chanc:
+                break
+            else:
+                chan = r()
+                i += 1
+                print(ex_fmt(i, True))
+        ii += i
+    res = ii / a
+    res1 = fmt(res)
+    print()
+    print(f"확률 : {chanc} ({chanc*100}%)")
+    print(f"평균 시도 : {res1} ({ex_fmt(res1)}) ({ex_fmt(res1, True)})")
+    print(f"전체 시도 : {fmt(ii)} ({ex_fmt(ii)}) ({ex_fmt(ii, True)})")
+    print("-"*10)
+
+
+while True:
+    main()
