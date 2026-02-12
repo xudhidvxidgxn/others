@@ -11,10 +11,13 @@ def fmt(x, f=False, a=1):
 
 
 def ex_fmt(x, b=False, a=4):
-    # x = x[0 : x.find(".")] if "." in x else x  # 소수점 안전 처리
-    x = str(x).replace(",", "")
-    x = str(round(float(x)))
-    x = x[::-1]
+    try:
+        # x = x[0 : x.find(".")] if "." in x else x  # 소수점 안전 처리
+        x = str(x).replace(",", "")
+        x = str(round(float(x)))
+        x = x[::-1]
+    except:
+        return "!잘못된 접근!"
 
     # a자씩 자르기 + 마지막 조각 보존
     x1 = []
