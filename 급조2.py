@@ -30,7 +30,7 @@ def ex_fmt(x, b=False, a=4):
     if b:
         x1 = list(map(lambda chunk: (chunk[::-1] or "0000"), x1))
     else:
-        x1 = list(map(lambda chunk: (chunk[::-1].lstrip("0") or "0000"), x1))
+        x1 = list(map(lambda chunk: (chunk[::-1].lstrip("0") or "0"), x1))
     res = " ".join(x1)
     return res
 
