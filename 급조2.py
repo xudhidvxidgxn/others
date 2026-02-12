@@ -39,17 +39,17 @@ def main():
     ii = 0
     r = random.random
     while True:
-        # try:
         a = input("시도 횟수 입력 | : ") or 1
-        a = int(a)
-        print(f"시도 횟수 : {a}회")
+        try:
+            a = int(a)
+        except ValueError:
+            continue
+        print(f"시도 횟수 : {ex_fmt(a)}회")
         chanc = input("\n확률 입력(%) | : ") or 1
         chanc = float(chanc.rstrip("%")) / 100
         print(f"확률 : {chanc}")
         input("go?")
         break
-    # except ValueError:
-    #    continue
     for i in range(a):
         i = 0
         chan = r()
