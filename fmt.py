@@ -1,6 +1,6 @@
-def fmt(x, f=False, a=1):
+def fmt(x, f=False):
     if f:
-        return round(x * a, 2)
+        return round(x, 2)
     s = f"{x*a:,.2f}"  # 우선 소수 둘째 자리까지 반올림해서 문자열로
     s = s.rstrip("0")  # 끝의 0 제거
     s = s.rstrip(".")  # 소수점만 남으면 제거
@@ -8,11 +8,15 @@ def fmt(x, f=False, a=1):
 
 
 def ex_fmt(x, b=False, a=4):
-    x = str(x).replace(",", "")
-    x = x[0 : x.find(".")] if "." in x else x  # 소수점 안전 처리
-    x = x[::-1]
+    try:
+        # x = x[0 : x.find(".")] if "." in x else x  # 소수점 안전 처리
+        x = str(x).replace(",", "")
+        x = str(round(float(x)))
+        x = x[::-1]
+    except:
+        return "!잘못된 접근!"
 
-    # a(기본 : 4)자씩 자르기 + 마지막 조각 보존
+    # a자씩 자르기 + 마지막 조각 보존
     x1 = []
     for i in range(0, len(x), a):
         chunk = x[i : i + a]
@@ -23,7 +27,7 @@ def ex_fmt(x, b=False, a=4):
     if b:
         x1 = list(map(lambda chunk: (chunk[::-1] or "0000"), x1))
     else:
-        x1 = list(map(lambda chunk: (chunk[::-1].lstrip("0") or "0000"), x1))
+        x1 = list(map(lambda chunk: (chunk[::-1].lstrip("0") or "0"), x1))
     res = " ".join(x1)
     return res
 
