@@ -68,7 +68,7 @@ def main():
     res = Decimal(astack) / Decimal(a)
     res1 = fmt(res)
     print()
-    print(f"확률 : {chanc:F} ({chanc*100:f}%)")
+    print(f"확률 : {chanc.normalize():F} ({(chanc*100).normalize():f}%)")
     print(f"평균 시도 : {res1} ({ex_fmt(res1)}) ({ex_fmt(res1, True)})")
     print()
     print(f"전체 시도 : {fmt(astack)} ({ex_fmt(astack)}) ({ex_fmt(astack, True)})")
