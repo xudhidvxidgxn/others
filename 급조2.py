@@ -1,12 +1,13 @@
 import random
+from decimal import Decimal, getcontext
 
 
 def fmt(x, f=False):
     if f:
-        return round(x, 2)
-    s = f"{x:,.2f}"  # 우선 소수 둘째 자리까지 반올림해서 문자열로
-    s = s.rstrip("0")  # 끝의 0 제거
-    s = s.rstrip(".")  # 소수점만 남으면 제거
+        return round(float(x), 2) if type(x) == float else "잘못된 접근"
+    s = f"{float(x):,.2f}"  # 우선 소수 둘째 자리까지 반올림해서 문자열로
+    s = s.rstrip("0").rstrip(".")  # 소수점만 남으면 제거
+    # 끝의 0 제거
     return s
 
 
@@ -37,7 +38,6 @@ def ex_fmt(x, b=False, a=4):
 
 def main():
     astack = 0
-    r = random.random
     while True:
         a = input("시도 횟수 입력 | : ") or 1
         try:
@@ -45,29 +45,30 @@ def main():
         except ValueError:
             continue
         print(f"시도 횟수 : {ex_fmt(a)}회 ({ex_fmt(a, True)})")
-        chanc = input("\n확률 입력(%) | : ") or 1
-        chanc = float(chanc.rstrip("%")) / 100
-        print(f"확률 : {chanc}")
+        
+        chanc_input = input("\n확률 입력(%) | : ") or 1 
+        chanc = Decimal(chanc_input.rstrip("%")) / Decimal('100')
+        print(f"확률 : {chanc:f}")
         input("go?")
         break
+    
     print("시도 중...")
+    chanc_float = float(chanc)
     for i in range(a):
         stack = 0
-        chan = r()
         while True:
-            if chan < chanc:
+            if random.random() < chanc_float:
                 # print("성공!")
                 break
             else:
-                chan = r()
                 stack += 1
                 # print(ex_fmt(i, True))
         astack += stack
         # print(f"완료! ({ex_fmt(i+1)}) ({ex_fmt(i+1, True)})")
-    res = astack / a
+    res = Decimal(astack) / Decimal(a)
     res1 = fmt(res)
     print()
-    print(f"확률 : {chanc} ({chanc*100}%)")
+    print(f"확률 : {chanc:F} ({chanc*100:f}%)")
     print(f"평균 시도 : {res1} ({ex_fmt(res1)}) ({ex_fmt(res1, True)})")
     print()
     print(f"전체 시도 : {fmt(astack)} ({ex_fmt(astack)}) ({ex_fmt(astack, True)})")
