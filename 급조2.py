@@ -45,30 +45,45 @@ def main():
         except ValueError:
             continue
         print(f"시도 횟수 : {ex_fmt(a)}회 ({ex_fmt(a, True)})")
-        
-        chanc_input = input("\n확률 입력(%) | : ") or 1 
-        chanc = Decimal(chanc_input.rstrip("%")) / Decimal('100')
-        print(f"확률 : {chanc:f}")
+
+        while True:
+            chanc_input = input("\n확률 입력(%) | : ") or 1
+            if "/" in chanc_input:
+                chanc_parts = chanc_input.split("/")
+                try:
+                    num1 = Decimal(chanc_parts[0].strip())
+                    num2 = Decimal(chanc_parts[1].strip())
+
+                    if num2 != 0:
+                        chanc = num1 / num2
+                        break
+                    else:
+                        print("0으로 나눌 수 없다.")
+                        continue
+                except:
+                    print("유효하지 않은 값이 있다.")
+                    continue
+            else:
+                chanc = Decimal(chanc_input.rstrip("%")) / Decimal("100")
+            break
+        print(f"확률 : {chanc:f} ({(chanc*100).normalize():f}%)")
         input("go?")
         break
-    
+
     print("시도 중...")
     chanc_float = float(chanc)
     for i in range(a):
         stack = 0
         while True:
+            stack += 1
             if random.random() < chanc_float:
-                # print("성공!")
                 break
-            else:
-                stack += 1
                 # print(ex_fmt(i, True))
         astack += stack
-        # print(f"완료! ({ex_fmt(i+1)}) ({ex_fmt(i+1, True)})")
     res = Decimal(astack) / Decimal(a)
     res1 = fmt(res)
     print()
-    print(f"확률 : {chanc.normalize():F} ({(chanc*100).normalize():f}%)")
+    print(f"확률 : {chanc.normalize():f} ({(chanc*100).normalize():f}%)")
     print(f"평균 시도 : {res1} ({ex_fmt(res1)}) ({ex_fmt(res1, True)})")
     print()
     print(f"전체 시도 : {fmt(astack)} ({ex_fmt(astack)}) ({ex_fmt(astack, True)})")
