@@ -60,3 +60,14 @@ export const strip = (str, chars = "\\s") => {
     const pattern = new RegExp(`^[${safeChars}]+|[${safeChars}]+$`, "g");
     return str.replace(pattern, "");
 };
+
+
+/* 
+이벤트 위임(이건 배워서 알겠지만) : 
+    이벤트를 식별할 요소의 부모에 addEventListener()를 걸고, callback에서 ev를 받아 ev.target으로 이벤트가 발생한 요소를 식별한다.
+
+preventDefault() : 
+    통상적인 키 이벤트가 아닌 내가 직접 이벤트를 실행하게 하기 위해서는 필수이다.
+
+
+ */
