@@ -61,15 +61,13 @@ export const strip = (str, chars = "\\s") => {
     return str.replace(pattern, "");
 };
 
+
 /* 
 이벤트 위임(이건 배워서 알겠지만) : 
     이벤트를 식별할 요소의 부모에 addEventListener()를 걸고, callback에서 ev를 받아 ev.target으로 이벤트가 발생한 요소를 식별한다.
 
 preventDefault() : 
     통상적인 키 이벤트가 아닌 내가 직접 이벤트를 실행하게 하기 위해서는 필수이다.
-
-.앞을 this로 하고 싶다면 일반 함수를 쓰고, 그렇지 않은 경우에는 화살표 함수를 씁니다.
-예약어는 당연히 함수 이름으로 안 되고요.
 
 
  */
