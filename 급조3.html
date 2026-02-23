@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+            body {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                height: 100vh;
+                gap: 20px;
+                padding: 20px;
+            }
+            #container {
+                display: flex;
+                gap: 15px;
+                width: fit-content;
+                height: fit-content;
+                align-items: center;
+            }
+            #container > #go,
+            #container > #input {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 5px 8px;
+            }
+            h1 {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 200px;
+                aspect-ratio: 22/9;
+                background-color: #e2e2e2;
+            }
+            a {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: inherit;
+                text-decoration: none;
+                cursor: default;
+            }
+            #history-list {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                width: fit-content;
+                height: fit-content;
+                gap: 20px;
+            }
+            #history-list > div {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                width: 350px;
+                padding: 8px 12px;
+                gap: 2px;
+                font-size: 20px;
+                font-weight: 600;
+                border-radius: 15px;
+                background-color: #e2e2e2;
+                box-shadow: 1px 1px 1px #b9b9b9;
+                transition:
+                    transform 0.2s,
+                    box-shadow 0.2s;
+            }
+            #history-list > div:hover {
+                transform: translateY(-3px);
+                box-shadow: 3px 5px 15px #b9b9b9;
+            }
+            #btn-area {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: fit-content;
+                height: fit-content;
+                gap: 10px;
+            }
+            #btn-area > button {
+                padding: 4px 8px;
+            }
+        </style>
+    </head>
+    <body>
+        <a href="https:/hitomi.la"><h1>H</h1></a>
+        <div id="container">
+            <input type="text" id="input" autocomplete="true" autofocus />
+            <button id="go" type="submit">이동하기</button>
+        </div>
+        <div id="btn-area">
+            <button onclick="clearHistory()">기록 보관소 삭제</button>
+            <button onclick="clearAll()">기록 보관소 초기화</button>
+        </div>
+        <div id="history-list"></div>
+        <script>
+            const input = document.getElementById("input");
+            const button = document.getElementById("go");
+            const container = document.getElementById("container");
+            const history_list = document.getElementById("history-list");
+
+            //input.addEventListener("input", (ev) => {
+            //    const elem = ev.target;
+            //    elem.value = elem.value.replace(/[^0-9]/g, '');
+            //});
+            //button.addEventListener("click", (ev) => {
+
+            //})
+            container.addEventListener("click", btnClick);
+            container.addEventListener("keydown", btnClick);
+            container.addEventListener("input", (ev) => {
+                const target = ev.target;
+                if (!(target === input)) return;
+
+                const only_nums = target.value.replace(/[^0-9]/g, "");
+                const max_length = 7;
+                const offset = 1;
+                let clipped = only_nums;
+                if (target.value.length > max_length) {
+                    clipped = only_nums.slice(0 + offset, 7 + offset);
+                }
+
+                if (target.value !== clipped) {
+                    target.value = clipped;
+                    // console.log(target);
+                    // console.log(target.value);
+                }
+            });
+            function btnClick(ev) {
+                if (ev instanceof KeyboardEvent) {
+                    if (ev.key === "Enter") {
+                        ev.preventDefault();
+                    } else return;
+                }
+                if (ev.type === "keydown" && ev.key !== "Enter") return;
+                if (ev.type === "click" && ev.target !== button) return;
+                if (!(input.value.length === 7)) {
+                    clearInput();
+                    return;
+                }
+                saveSearchTerm(input.value);
+                renderHistory();
+                window.open(`https://hitomi.la/galleries/${input.value}.html`);
+            }
+
+            function saveSearchTerm(term) {
+                if (!term || term.trim() === "") return;
+
+                const history = JSON.parse(localStorage.getItem("recent_searches") || "[]");
+
+                const new_history = [term, ...history.filter((item) => item !== term)];
+
+                localStorage.setItem("recent_searches", JSON.stringify(new_history));
+            }
+            function clearHistory() {
+                if (history_list.children.length >= 0) {
+                    if (confirm("진짜 기록 저장소를 삭제?")) {
+                        localStorage.removeItem("recent_searches");
+                        location.reload();
+                    }
+                }
+            }
+            function clearAll() {
+                if (history_list.children.length > 0) {
+                    if (confirm("진짜 기록 전체 삭제?")) {
+                        localStorage.clear();
+                        location.reload();
+                    }
+                }
+            }
+            function clearInput() {
+                input.value = "";
+                input.focus();
+            }
+
+            function renderHistory() {
+                if (!history_list) return;
+
+                const history = JSON.parse(localStorage.getItem("recent_searches") || "[]");
+
+                const top5 = history.slice(0, 5);
+
+                history_list.innerHTML = "";
+
+                top5.forEach((item) => {
+                    const div = document.createElement("div");
+
+                    const a = document.createElement("a");
+                    a["href"] = `https://hitomi.la/galleries/${item}.html`;
+                    a.textContent = `${item}`;
+                    a["style"].width = "100%";
+                    a["style"].paddingTop = "3px";
+                    a["style"].paddingBottom = "3px";
+                    a["style"].boxSizing = "border-box";
+
+                    const del = document.createElement("button");
+                    del.textContent = "삭제";
+                    del["style"].padding = "3px 5px";
+                    del["style"].width = "100%";
+
+                    del.addEventListener("click", (ev) => {
+                        ev.preventDefault();
+                        ev.stopPropagation();
+                        if (confirm(`삭제해요? '${item}' ?`)) {
+                            const new_history = history.filter((h) => h !== item);
+                            localStorage.setItem("recent_searches", JSON.stringify(new_history));
+                            renderHistory();
+                        }
+                    });
+
+                    //a.appendChild(div);
+                    //a.appendChild(del);
+                    //history_list.appendChild(a);
+                    div.appendChild(a);
+                    div.appendChild(del);
+                    history_list.appendChild(div);
+                });
+            }
+
+            window.addEventListener("DOMContentLoaded", () => {
+                renderHistory();
+                document.querySelectorAll("a[href^='http']").forEach((a) => {
+                    a["target"] = "_blank";
+                    a["rel"] = "noopen noreferrer";
+                });
+            });
+        </script>
+    </body>
+</html>
