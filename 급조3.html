@@ -150,6 +150,7 @@
                 saveSearchTerm(input.value);
                 renderHistory();
                 window.open(`https://hitomi.la/galleries/${input.value}.html`);
+                clearInput();
             }
 
             function saveSearchTerm(term) {
