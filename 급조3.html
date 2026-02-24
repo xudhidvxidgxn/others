@@ -103,9 +103,11 @@
         <div id="btn-area">
             <button onclick="clearHistory()">기록 보관소 삭제</button>
             <button onclick="clearAll()">기록 보관소 초기화</button>
+            <button onclick="exportHistory()" style="background-color: #d1e7dd">기록 내보내기 (JSON)</button>
+            <button onclick="importHistory()" style="background-color: #fff3cd">가져오기</button>
         </div>
         <div id="history-list"></div>
-        
+
         <script>
             // @ts_
             const input = document.getElementById("input");
@@ -164,6 +166,7 @@
                 const history = getLocalStorage("recent_searches");
                 if (history.includes(val)) {
                     alert("이미 최근 기록에 있는 번호입니다");
+                    saveSearchTerm(val);
                     clearInput();
                     return;
                 }
@@ -173,11 +176,15 @@
                 window.open(`https://hitomi.la/galleries/${input.value}.html`);
                 clearInput();
             }
-
-            function saveSearchTerm(term) {
+            /**
+             * 저장소에 문자열 저장하는 함수
+             * @param {string} term - 저장소에 저장할 문자열(여기서는 번호 위주)
+             * @param {string} [stroage_name = "recent_searches"] - 저장소 이름 (문자열)
+             */
+            function saveSearchTerm(term, storage_name = "recent_searches") {
                 if (!term || term.trim() === "") return;
 
-                const history = getLocalStorage("recent_searches");
+                const history = getLocalStorage(storage_name);
 
                 const new_history = [term, ...history.filter((item) => item !== term)];
 
@@ -199,9 +206,11 @@
                     }
                 }
             }
+            /**
+             * input을 초기화하는 함수(사실 그냥 페이지 새로고침으로 없애는 것) (페이지 규모가 커지면(어디서 가져오는 게 생기면) 안 좋을 거란 거 압니다)
+             */
             function clearInput() {
-                input.value = "";
-                input.focus();
+                location.reload();
             }
 
             /**
@@ -251,6 +260,12 @@
             }
 
             /**
+             * @typedef {Object} ExportResult
+             * @property {boolean} success - 성공 여부
+             * @property {string} [fileName] - 저장된 파일명
+             */
+
+            /**
              * 내보내기 엔진
              * 현재 로컬 스토리지에 저장된 '최근 검색 기록'을 JSON 파일로 추출합니다.
              * @param {string} storage_key - 내보낼 로컬스토리지 키 (기본값: 'recent_searches')
@@ -294,13 +309,69 @@
                     return { success: false };
                 }
             }
+            /**
+             * [히토미 익스프레스] 가져오기 엔진
+             * JSON 백업 파일을 읽어 로컬 스토리지의 기존 데이터와 병합합니다.
+             * * * 동작 순서:
+             * 1. 파일 선택창 띄우기 (hidden input)
+             * 2. 파일 읽기 (FileReader API)
+             * 3. 데이터 검증 (배열인지, 7자리 숫자인지 확인)
+             * 4. 기존 데이터와 중복 제거 및 병합
+             * 5. 화면 다시 그리기 (renderHistory)
+             * * @returns {Promise<boolean>} 성공 시 true 반환
+             */
+            function importHistory() {
+                return new Promise((resolve) => {
+                    // 1. 파일 선택용 가상 input 생성
+                    const input = document.createElement("input");
+                    input.type = "file";
+                    input.accept = ".json"; // JSON 파일만 허용
+
+                    input.onchange = (e) => {
+                        const file = e.target.files[0];
+                        if (!file) return resolve(false);
+
+                        const reader = new FileReader();
+                        reader.onload = (event) => {
+                            try {
+                                /** @type {any[]} */
+                                const importedData = JSON.parse(event.target.result);
+
+                                // 2. [검증] 데이터가 배열인지, 그리고 각 항목이 7자리 숫자인지 확인
+                                if (!Array.isArray(importedData)) throw new Error("배열 형식이 아닙니다.");
+
+                                const isValid = importedData.every((item) => /^[0-9]{7}$/.test(item));
+                                if (!isValid) throw new Error("유효하지 않은 데이터 형식이 포함되어 있습니다.");
+
+                                // 3. 병합 (기존 데이터 + 새 데이터, 중복 제거)
+                                const currentHistory = getLocalStorage("recent_searches");
+                                const mergedHistory = [...new Set([...importedData, ...currentHistory])];
+
+                                // 4. 저장 및 UI 갱신
+                                setLocalStorage("recent_searches", mergedHistory);
+                                renderHistory();
+
+                                alert(`성공적으로 ${importedData.length}개의 기록을 가져왔습니다!`);
+                                resolve(true);
+                            } catch (err) {
+                                alert(`가져오기 실패: ${err.message}`);
+                                resolve(false);
+                            }
+                        };
+                        reader.readAsText(file);
+                    };
+
+                    input.click(); // 파일 선택창 강제 오픈
+                });
+            }
 
             /**
-             * @param {string} storage_name - 저장소의 이름 (문자열이어야 해!)
+             * 저장소 이름 받아서 가져옵니다
+             * @param {string} [storage_name = "recent_searches"] - 저장소의 이름 (문자열이어야 해!)
              * @param {any} default_value - 데이터가 없을 경우 저장할 초기값 (기본값: [])
              * @returns {any} 파싱된 데이터 객체 또는 배열
              */
-            function getLocalStorage(storage_name, default_value = []) {
+            function getLocalStorage(storage_name = "recent_searches", default_value = []) {
                 const data = localStorage.getItem(storage_name);
 
                 // 데이터가 없으면 초기값을 저장하고 반환합니다.
