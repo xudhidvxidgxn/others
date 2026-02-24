@@ -164,12 +164,12 @@
                 }
 
                 const history = getLocalStorage("recent_searches");
-                if (history.includes(val)) {
-                    alert("이미 최근 기록에 있는 번호입니다");
-                    saveSearchTerm(val);
-                    clearInput();
-                    return;
-                }
+                //if (history.includes(val)) {
+                //  alert("이미 최근 기록에 있는 번호입니다");
+                //    saveSearchTerm(val);
+                //    clearInput();
+                //    return;
+                // }
 
                 saveSearchTerm(val);
                 renderHistory();
