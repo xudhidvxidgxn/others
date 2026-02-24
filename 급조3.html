@@ -48,6 +48,9 @@
                 text-decoration: none;
                 cursor: default;
             }
+            #input {
+                font-size: 16px;
+            }
             #history-list {
                 display: flex;
                 flex-direction: column;
@@ -94,7 +97,7 @@
     <body>
         <a href="https:/hitomi.la"><h1>H</h1></a>
         <div id="container">
-            <input type="text" id="input" autocomplete="true" autofocus />
+            <input type="text" id="input" inputmode="numeric" pattern="[0-9]*" autofocus />
             <button id="go" type="submit">이동하기</button>
         </div>
         <div id="btn-area">
@@ -134,6 +137,12 @@
                     // console.log(target);
                     // console.log(target.value);
                 }
+
+                const history = getLocalStorage("recent_searches");
+
+                const filtered = target.value ? history.filter((item) => item.startsWith(target.value)) : history;
+
+                renderHistory(filtered);
             });
             function btnClick(ev) {
                 if (ev instanceof KeyboardEvent) {
@@ -143,11 +152,21 @@
                 }
                 if (ev.type === "keydown" && ev.key !== "Enter") return;
                 if (ev.type === "click" && ev.target !== button) return;
+
+                const val = input.value.trim();
                 if (!(input.value.length === 7)) {
                     clearInput();
                     return;
                 }
-                saveSearchTerm(input.value);
+
+                const history = getLocalStorage("recent_searches");
+                if (history.includes(val)) {
+                    alert("이미 최근 기록에 있는 번호입니다");
+                    clearInput();
+                    return;
+                }
+
+                saveSearchTerm(val);
                 renderHistory();
                 window.open(`https://hitomi.la/galleries/${input.value}.html`);
                 clearInput();
@@ -156,7 +175,7 @@
             function saveSearchTerm(term) {
                 if (!term || term.trim() === "") return;
 
-                const history = JSON.parse(localStorage.getItem("recent_searches") || "[]");
+                const history = getLocalStorage("recent_searches");
 
                 const new_history = [term, ...history.filter((item) => item !== term)];
 
@@ -183,12 +202,10 @@
                 input.focus();
             }
 
-            function renderHistory() {
+            function renderHistory(custom_data = null) {
                 if (!history_list) return;
 
-                const history = JSON.parse(localStorage.getItem("recent_searches") || "[]");
-
-                const top5 = history.slice(0, 5);
+                const history = custom_data || getLocalStorage("recent_searches");
 
                 history_list.innerHTML = "";
 
@@ -227,6 +244,37 @@
                 });
             }
 
+            /**
+             * @param {string} storage_name - 저장소의 이름 (문자열이어야 해!)
+             * @param {any} default_value - 데이터가 없을 경우 저장할 초기값 (기본값: [])
+             * @returns {any} 파싱된 데이터 객체 또는 배열
+             */
+            function getLocalStorage(storage_name, default_value = []) {
+                const data = localStorage.getItem(storage_name);
+
+                // 데이터가 없으면 초기값을 저장하고 반환합니다.
+                if (data === null) {
+                    setLocalStorage(storage_name, default_value);
+                    return default_value;
+                }
+
+                // 데이터가 있으면 JSON으로 변환해서 반환합니다.
+                try {
+                    return JSON.parse(data);
+                } catch (e) {
+                    console.error("localStorage 파싱 에러:", e);
+                    return default_value;
+                }
+            }
+
+            /**
+             * 데이터를 JSON 문자열로 변환하여 localStorage에 저장합니다.
+             * @param {string} storage_name - 로컬스토리지 키 이름
+             * @param {any} data - 저장할 데이터 (객체나 배열 등)
+             */
+            function setLocalStorage(storage_name, data) {
+                localStorage.setItem(storage_name, JSON.stringify(data));
+            }
             window.addEventListener("DOMContentLoaded", () => {
                 renderHistory();
                 document.querySelectorAll("a[href^='http']").forEach((a) => {

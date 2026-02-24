@@ -60,6 +60,40 @@ export const strip = (str, chars = "\\s") => {
     const pattern = new RegExp(`^[${safeChars}]+|[${safeChars}]+$`, "g");
     return str.replace(pattern, "");
 };
+/**
+ * 5. getLocalStorage (안전한 데이터 불러오기)
+ * localStorage에서 데이터를 가져오거나, 데이터가 없으면 초기화 후 반환합니다.
+ * @param {string} storage_name - 로컬스토리지 키 이름
+ * @param {any} [default_value=[]] - 데이터가 없을 때 저장할 기본값
+ * @returns {any} 파싱된 데이터 객체 또는 배열
+ */
+export const getLocalStorage = (storage_name, default_value = []) => {
+    const data = localStorage.getItem(storage_name);
+
+    // 1. 창고에 데이터가 아예 없으면 기본값을 저장하고 바로 반환합니다.
+    if (data === null) {
+        setLocalStorage(storage_name, default_value);
+        return default_value;
+    }
+
+    // 2. 데이터가 있으면 JSON으로 변환합니다. (깨진 데이터 대비 try-catch)
+    try {
+        return JSON.parse(data);
+    } catch (e) {
+        console.error(`[getLocalStorage] '${storage_name}' 파싱 실패:`, e);
+        return default_value;
+    }
+};
+
+/**
+ * 6. setLocalStorage (데이터 저장하기)
+ * 데이터를 JSON 문자열로 변환하여 localStorage에 저장합니다.
+ * @param {string} storage_name - 로컬스토리지 키 이름
+ * @param {any} data - 저장할 데이터 (객체, 배열, 숫자 등)
+ */
+export const setLocalStorage = (storage_name, data) => {
+    localStorage.setItem(storage_name, JSON.stringify(data));
+};
 
 /* 
 이벤트 위임(이건 배워서 알겠지만) : 
