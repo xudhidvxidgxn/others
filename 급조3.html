@@ -177,18 +177,16 @@
                 clearInput();
             }
             /**
-             * 저장소에 문자열 저장하는 함수
+             * 저장소에 문자열 저장하는 함수 (저장소 기본값은 recent_searches)
              * @param {string} term - 저장소에 저장할 문자열(여기서는 번호 위주)
              * @param {string} [stroage_name = "recent_searches"] - 저장소 이름 (문자열)
              */
             function saveSearchTerm(term, storage_name = "recent_searches") {
                 if (!term || term.trim() === "") return;
-
                 const history = getLocalStorage(storage_name);
-
                 const new_history = [term, ...history.filter((item) => item !== term)];
-
                 localStorage.setItem("recent_searches", JSON.stringify(new_history));
+                renderHistory();
             }
             function clearHistory() {
                 if (history_list.children.length >= 0) {
@@ -234,6 +232,9 @@
                     a["style"].paddingTop = "3px";
                     a["style"].paddingBottom = "3px";
                     a["style"].boxSizing = "border-box";
+                    a.addEventListener("click", () => {
+                        saveSearchTerm(item);
+                    })
 
                     const del = document.createElement("button");
                     del.textContent = "삭제";
