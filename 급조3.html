@@ -109,7 +109,7 @@
         <div id="history-list"></div>
 
         <script>
-            // @ts_
+            // @ts-check
             const input = document.getElementById("input");
             const button = document.getElementById("go");
             const container = document.getElementById("container");
@@ -183,8 +183,8 @@
              */
             function saveSearchTerm(term, storage_name = "recent_searches") {
                 if (!term || term.trim() === "") return;
-                if (term === history[0]) return;
                 const history = getLocalStorage(storage_name);
+                if (term === history[0]) return;
                 const new_history = [term, ...history.filter((item) => item !== term)];
                 localStorage.setItem("recent_searches", JSON.stringify(new_history));
                 renderHistory();
