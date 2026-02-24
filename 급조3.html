@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="en">
+<html lang="ko">
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>히토미 익스프레스</title>
+        <title>H Express</title>
         <style>
             * {
                 margin: 0;
@@ -281,9 +281,9 @@
                         return { success: false };
                     }
 
-                    // 2. 파일 이름 생성 (hitomi_backup_2024-05-22.json 형식)
+                    // 2. 파일 이름 생성 (h_backup_2024-05-22.json 형식)
                     const date = new Date().toISOString().split("T")[0];
-                    const fileName = `hitomi_express_backup_${date}.json`;
+                    const fileName = `h_express_backup_${date}.json`;
 
                     // 3. Blob 생성 (데이터를 파일 덩어리로 변환)
                     const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
