@@ -323,6 +323,7 @@
                         if (memo_txt) memo_txt.focus();
                     }, 50);
                 }
+                fixScroll();
             }
 
             /** saveMemo 함수 
@@ -349,6 +350,7 @@
 
                 setLocalStorage("memo_storage", memos);
                 renderHistory();
+                fixScroll();
             }
 
             /** renderHistory
@@ -395,6 +397,7 @@
                     memo.classList.add("button");
                     memo.addEventListener("click", (ev) => {
                         memoModalToggle();
+                        saveSearchTerm(item);
                         const memo_to = document.getElementById("memo-to");
                         const memo_txt = document.getElementById("memo-txt");
                         if (memo_to.value !== item) {
@@ -556,6 +559,13 @@
                 localStorage.setItem(storage_name, JSON.stringify(data));
             }
 
+            function fixScroll() {
+                window.scrollTo({
+                    top: 0,
+                    left: 0,
+                    behavior: "instant",
+                });
+            }
             window.addEventListener("DOMContentLoaded", () => {
                 renderHistory();
                 document.querySelectorAll("a[href^='http']").forEach((a) => {
