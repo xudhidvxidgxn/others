@@ -48,6 +48,9 @@
                 text-decoration: none;
                 cursor: default;
             }
+            .link {
+                width: 100%;
+            }
             #input {
                 font-size: 16px;
             }
@@ -67,9 +70,9 @@
                 justify-content: center;
                 width: 350px;
                 padding: 8px 12px;
-                gap: 2px;
                 font-size: 20px;
                 font-weight: 600;
+                text-align: center;
                 border-radius: 15px;
                 background-color: #e2e2e2;
                 box-shadow: 1px 1px 1px #b9b9b9;
@@ -92,9 +95,63 @@
             #btn-area > button {
                 padding: 4px 8px;
             }
+            .button-bar {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                width: 100%;
+                margin-top: 5px;
+            }
+            .button-bar > * {
+                flex-grow: 1;
+            }
+            #memo-modal {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                position: fixed;
+                gap: 10px;
+                left: 0;
+                top: 0;
+                width: 100vw;
+                height: 100vh;
+                padding: 20px;
+                background-color: skyblue;
+                z-index: 1000;
+                transform: translateX(-100%);
+                transition: transform 0.2s;
+            }
+            #modal-toggle:checked + #memo-modal {
+                transform: translateX(0);
+            }
+            #memo-modal > * {
+                user-select: none;
+            }
+            .row {
+                display: flex;
+                gap: 20px;
+                align-items: center;
+                justify-content: center;
+            }
+            .row > input {
+                padding: 6px 10px;
+                font-size: 18px;
+            }
         </style>
     </head>
     <body>
+        <input type="checkbox" name="modal-toggle" id="modal-toggle" hidden />
+        <div id="memo-modal" onclick="memoModalToggle()">
+            <div class="row">
+                <label for="memo-to">메모할 번호</label>
+                <input type="text" id="memo-to" disabled />
+            </div>
+            <div class="row" onclick="event.stopPropagation()">
+                <label for="memo-txt">메모할 내용</label>
+                <input type="text" id="memo-txt" />
+            </div>
+            <button type="submit" onclick="saveMemo()">작성하기</button>
+        </div>
         <a href="https:/hitomi.la"><h1>H</h1></a>
         <div id="container">
             <input type="text" id="input" inputmode="numeric" pattern="[0-9]*" autofocus />
@@ -162,12 +219,6 @@
                 }
 
                 const history = getLocalStorage("recent_searches");
-                //if (history.includes(val)) {
-                //  alert("이미 최근 기록에 있는 번호입니다");
-                //    saveSearchTerm(val);
-                //    clearInput();
-                //    return;
-                // }
 
                 saveSearchTerm(val);
                 renderHistory();
@@ -184,7 +235,7 @@
                 const history = getLocalStorage(storage_name);
                 if (term === history[0]) return;
                 const new_history = [term, ...history.filter((item) => item !== term)];
-                localStorage.setItem("recent_searches", JSON.stringify(new_history));
+                setLocalStorage("recent_searches", new_history);
                 renderHistory();
             }
             function clearHistory() {
@@ -203,58 +254,106 @@
                     }
                 }
             }
-            /**
-             * input을 초기화하는 함수(사실 그냥 페이지 새로고침으로 없애는 것) (페이지 규모가 커지면(어디서 가져오는 게 생기면) 안 좋을 거란 거 압니다)
-             */
+            /** input을 초기화하는 함수 */
             function clearInput() {
-                location.reload();
+                input.value = "";
+                input.focus();
             }
 
-            /**
+            /** memoModalToggle:  메모 작성창 토글 함수
+             * 모달 체크박스를 조절합니다 */
+            function memoModalToggle() {
+                /** @type {HTMLElement} - 모달 토글 버튼 */
+                const toggle_btn = document.getElementById("modal-toggle");
+                if(!toggle_btn.checked) document.getElementById("memo-txt").focus();
+                toggle_btn.checked = !toggle_btn.checked;
+            }
+
+            /** saveMemo 함수 
+            * 메모 작성을 컨트롤하는 함수입니다.
+            @param {string} key - 메모가 작성될 번호입니다. 
+            @param {string} txt - 메모 내용입니다. 
+            @example saveMemo(key, "abc") */
+            function saveMemo() {
+                /** @type {Object<string, string>} - memo는 "번호", "메모" 로 이루어집니다.*/
+                const memos = getLocalStorage("memo_storage", {});
+                const key = document.getElementById("memo-to").value;
+                const txt = document.getElementById("memo-txt").value;
+                if (txt.trim() === "") {
+                    if(memos[key]) {
+                        delete memos[key];
+                    }
+                } else {
+                    memos[key] = txt;
+                }
+
+                setLocalStorage("memo_storage", memos);
+                renderHistory();
+            }
+
+            /** renderHistory
              * localStorage에서 최근 기록을 가져와 화면에 표시하는 함수입니다. (HTMLdoc 구조 포함)
-             * @param {list|null} [custom_data=null] 리스트입니다. (custom_data가 없으면 localStorage에서 recent_searches를 가져옵니다.)}
+             * @param {list} [custom_data=null] 리스트입니다. (custom_data가 없으면 localStorage에서 recent_searches를 가져옵니다.)}
              */
             function renderHistory(custom_data = null) {
                 if (!history_list) return;
 
                 const history = custom_data || getLocalStorage("recent_searches");
+                const memo_history = getLocalStorage("memo_storage", {});
 
                 history_list.innerHTML = "";
 
                 history.forEach((item) => {
                     const div = document.createElement("div");
-
+                    const button_bar = document.createElement("div");
+                    button_bar.classList.add("button-bar");
                     const a = document.createElement("a");
                     a["href"] = `https://hitomi.la/galleries/${item}.html`;
                     a.textContent = `${item}`;
-                    a["style"].width = "100%";
-                    a["style"].paddingTop = "3px";
-                    a["style"].paddingBottom = "3px";
-                    a["style"].boxSizing = "border-box";
+                    a.classList.add("link");
                     a.addEventListener("click", () => {
                         saveSearchTerm(item);
                     });
 
                     const del = document.createElement("button");
                     del.textContent = "삭제";
-                    del["style"].padding = "3px 5px";
-                    del["style"].width = "100%";
+                    del.classList.add("button");
 
                     del.addEventListener("click", (ev) => {
                         ev.preventDefault();
                         ev.stopPropagation();
                         if (confirm(`삭제해요? '${item}' ?`)) {
                             const new_history = history.filter((h) => h !== item);
-                            localStorage.setItem("recent_searches", JSON.stringify(new_history));
+                            setLocalStorage("recent_searches", new_history);
                             renderHistory();
                         }
                     });
 
-                    //a.appendChild(div);
-                    //a.appendChild(del);
-                    //history_list.appendChild(a);
+                    /** @type {HTMLButtonElement} - */
+                    const memo = document.createElement("button");
+                    memo.textContent = "메모";
+                    memo.classList.add("button");
+                    memo.addEventListener("click", (ev) => {
+                        memoModalToggle();
+                        const memo_to = document.getElementById("memo-to");
+                        const memo_txt = document.getElementById("memo-txt");
+                        if(memo_to.value !== item) {
+                            memo_txt.value = memo_history[item] || "";
+                        }
+                        memo_to.value = item;
+
+                    });
+
                     div.appendChild(a);
-                    div.appendChild(del);
+                    if(memo_history[item]) {
+                        const span = document.createElement("span");
+                        span.textContent = memo_history[item];
+                        span.style.fontSize = '12px';
+                        div.appendChild(span);
+                    }
+                    button_bar.appendChild(memo);
+                    button_bar.appendChild(del);
+                    div.appendChild(button_bar);
                     history_list.appendChild(div);
                 });
             }
@@ -391,10 +490,10 @@
 
             /**
              * 데이터를 JSON 문자열로 변환하여 localStorage에 저장합니다.
-             * @param {string} storage_name - 로컬스토리지 키 이름
+             * @param {string} [storage_name=recent_searches] - 로컬스토리지 키 이름 (없으면 recent_searches)
              * @param {any} data - 저장할 데이터 (객체나 배열 등)
              */
-            function setLocalStorage(storage_name, data) {
+            function setLocalStorage(storage_name = "recent_searches", data) {
                 localStorage.setItem(storage_name, JSON.stringify(data));
             }
             window.addEventListener("DOMContentLoaded", () => {
