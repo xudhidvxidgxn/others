@@ -126,20 +126,25 @@
             container.addEventListener("keydown", btnClick);
             container.addEventListener("input", (ev) => {
                 const target = ev.target;
+                /** @type {string} - input된 방식
+                 * * 그냥 입력하기 (insertText)
+                 * 붙여넣기 (insertFromPaste)
+                 * 되돌리기
+                 * 지우기
+                 * 등등... */
+                const type = ev.inputType;
                 if (!(target === input)) return;
 
-                const only_nums = target.value.replace(/[^0-9]/g, "");
+                /** @type {string} - 정규식으로 숫자만 잘라냄 */
+                const only_nums = target.value.replace(/[^0-9]+/g, "");
                 const max_length = 7;
-                const offset = 1;
                 let clipped = only_nums;
-                if (target.value.length > max_length) {
-                    clipped = only_nums.slice(0 + offset, 7 + offset);
+                if (clipped.length > max_length) {
+                    clipped = clipped.slice(-max_length);
                 }
 
                 if (target.value !== clipped) {
                     target.value = clipped;
-                    // console.log(target);
-                    // console.log(target.value);
                 }
 
                 const history = getLocalStorage("recent_searches");
@@ -235,7 +240,7 @@
                     a["style"].boxSizing = "border-box";
                     a.addEventListener("click", () => {
                         saveSearchTerm(item);
-                    })
+                    });
 
                     const del = document.createElement("button");
                     del.textContent = "삭제";
