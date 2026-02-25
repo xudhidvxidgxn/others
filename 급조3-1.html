@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="ko">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>H Express - Fixed</title>
+        <style>
+            * { margin: 0; padding: 0; box-sizing: border-box; }
+            body { display: flex; flex-direction: column; align-items: center; min-height: 100vh; gap: 20px; padding: 20px; font-family: sans-serif; }
+            #container { display: flex; gap: 15px; width: fit-content; align-items: center; }
+            #input { padding: 8px 12px; font-size: 16px; width: 150px; }
+            #go { padding: 8px 16px; cursor: pointer; }
+            h1 { display: flex; align-items: center; justify-content: center; width: 200px; aspect-ratio: 22/9; background-color: #e2e2e2; border-radius: 10px; }
+            a { text-decoration: none; color: inherit; }
+            
+            #btn-area { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+            button { padding: 6px 12px; cursor: pointer; border: 1px solid #ccc; border-radius: 5px; background: #fff; }
+            button:hover { background: #f0f0f0; }
+
+            #history-list { display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 400px; gap: 15px; }
+            .history-item { width: 100%; padding: 15px; border-radius: 15px; background-color: #e2e2e2; box-shadow: 1px 1px 3px rgba(0,0,0,0.1); text-align: center; }
+            .history-item .link { font-size: 20px; font-weight: bold; display: block; margin-bottom: 5px; color: #333; }
+            .memo-text { font-size: 13px; color: #666; margin-bottom: 10px; min-height: 1em; }
+            .button-bar { display: flex; gap: 10px; }
+            .button-bar button { flex: 1; font-size: 12px; padding: 4px; }
+
+            /* 모달 스타일 */
+            #memo-modal { 
+                display: flex; flex-direction: column; align-items: center; justify-content: center;
+                position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; 
+                background-color: rgba(0,0,0,0.5); z-index: 2000; 
+                visibility: hidden; opacity: 0; transition: 0.3s;
+            }
+            #modal-toggle:checked + #memo-modal { visibility: visible; opacity: 1; }
+            .modal-content { background: white; padding: 25px; border-radius: 15px; display: flex; flex-direction: column; gap: 15px; width: 300px; }
+            .modal-content input { padding: 8px; width: 100%; }
+        </style>
+    </head>
+    <body>
+        <input type="checkbox" id="modal-toggle" hidden />
+        <div id="memo-modal" onclick="memoModalToggle()">
+            <div class="modal-content" onclick="event.stopPropagation()">
+                <h3>메모 작성</h3>
+                <label>대상 번호: <input type="text" id="memo-to" disabled /></label>
+                <label>내용: <input type="text" id="memo-txt" placeholder="메모를 입력하세요" /></label>
+                <button onclick="saveMemo()">저장하기</button>
+                <button onclick="memoModalToggle()">닫기</button>
+            </div>
+        </div>
+
+        <a href="https://hitomi.la" target="_blank"><h1>H</h1></a>
+        
+        <div id="container">
+            <input type="text" id="input" inputmode="numeric" placeholder="7자리 숫자" maxlength="7" autofocus />
+            <button id="go">이동하기</button>
+        </div>
+
+        <div id="btn-area">
+            <button onclick="clearHistory()">기록 삭제</button>
+            <button onclick="clearAll()">전체 초기화</button>
+            <button onclick="exportHistory()" style="background-color: #d1e7dd">내보내기 (JSON)</button>
+            <button onclick="importHistory()" style="background-color: #fff3cd">가져오기</button>
+        </div>
+
+        <div id="history-list"></div>
+
+        <script>
+            const input = document.getElementById("input");
+            const button = document.getElementById("go");
+            const historyList = document.getElementById("history-list");
+
+            // --- [1] 안전한 로컬스토리지 관리 함수 ---
+            function getLocalStorage(key, defaultValue = []) {
+                const data = localStorage.getItem(key);
+                if (data === null) return defaultValue; // 여기서 setItem을 하지 않는 것이 핵심!
+                try {
+                    return JSON.parse(data);
+                } catch (e) {
+                    return defaultValue;
+                }
+            }
+
+            function setLocalStorage(key, data) {
+                try {
+                    // 데이터가 배열이면 최대 500개로 제한 (용량 초과 방지)
+                    let finalData = data;
+                    if (Array.isArray(data) && data.length > 500) {
+                        finalData = data.slice(0, 500);
+                    }
+                    localStorage.setItem(key, JSON.stringify(finalData));
+                } catch (e) {
+                    if (e.name === 'QuotaExceededError') {
+                        alert("용량이 꽉 찼습니다! 오래된 기록을 일부 정리합니다.");
+                        // 비상 조치: 데이터의 절반을 날림
+                        if (Array.isArray(data)) {
+                            localStorage.setItem(key, JSON.stringify(data.slice(0, 100)));
+                        }
+                    }
+                }
+            }
+
+            // --- [2] 메인 로직 ---
+            function processGo() {
+                const val = input.value.trim();
+                if (val.length !== 7 || isNaN(val)) {
+                    input.value = "";
+                    input.focus();
+                    return;
+                }
+                
+                saveSearchTerm(val);
+                window.open(`https://hitomi.la/galleries/${val}.html`, "_blank");
+                input.value = "";
+                renderHistory();
+            }
+
+            function saveSearchTerm(term) {
+                if (!term) return;
+                const history = getLocalStorage("recent_searches");
+                // 중복 제거 후 최신 항목을 맨 앞으로
+                const newHistory = [term, ...history.filter(item => item !== term)];
+                setLocalStorage("recent_searches", newHistory);
+            }
+
+            function renderHistory(customData = null) {
+                const history = customData || getLocalStorage("recent_searches");
+                const memos = getLocalStorage("memo_storage", {});
+
+                historyList.innerHTML = "";
+
+                history.forEach(item => {
+                    const div = document.createElement("div");
+                    div.className = "history-item";
+
+                    const a = document.createElement("a");
+                    a.href = `https://hitomi.la/galleries/${item}.html`;
+                    a.target = "_blank";
+                    a.className = "link";
+                    a.textContent = item;
+                    a.onclick = () => saveSearchTerm(item);
+
+                    const memoDiv = document.createElement("div");
+                    memoDiv.className = "memo-text";
+                    memoDiv.textContent = memos[item] || "";
+
+                    const btnBar = document.createElement("div");
+                    btnBar.className = "button-bar";
+
+                    const memoBtn = document.createElement("button");
+                    memoBtn.textContent = "메모";
+                    memoBtn.onclick = () => openMemo(item);
+
+                    const delBtn = document.createElement("button");
+                    delBtn.textContent = "삭제";
+                    delBtn.onclick = (e) => {
+                        e.stopPropagation();
+                        if (confirm(`'${item}' 기록을 삭제할까요?`)) {
+                            const currentHistory = getLocalStorage("recent_searches");
+                            const nextHistory = currentHistory.filter(h => h !== item);
+                            setLocalStorage("recent_searches", nextHistory);
+                            renderHistory();
+                        }
+                    };
+
+                    btnBar.append(memoBtn, delBtn);
+                    div.append(a, memoDiv, btnBar);
+                    historyList.appendChild(div);
+                });
+            }
+
+            // --- [3] 메모 및 부가 기능 ---
+            function openMemo(item) {
+                const memos = getLocalStorage("memo_storage", {});
+                document.getElementById("memo-to").value = item;
+                document.getElementById("memo-txt").value = memos[item] || "";
+                document.getElementById("modal-toggle").checked = true;
+            }
+
+            function memoModalToggle() {
+                document.getElementById("modal-toggle").checked = false;
+            }
+
+            function saveMemo() {
+                const key = document.getElementById("memo-to").value;
+                const txt = document.getElementById("memo-txt").value.trim();
+                const memos = getLocalStorage("memo_storage", {});
+
+                if (!txt) delete memos[key];
+                else memos[key] = txt;
+
+                setLocalStorage("memo_storage", memos);
+                memoModalToggle();
+                renderHistory();
+            }
+
+            // --- [4] 이벤트 리스너 ---
+            button.onclick = processGo;
+            input.onkeydown = (e) => { if (e.key === "Enter") processGo(); };
+            input.oninput = (e) => {
+                const val = e.target.value.replace(/[^0-9]/g, "");
+                e.target.value = val;
+                const history = getLocalStorage("recent_searches");
+                const filtered = val ? history.filter(h => h.startsWith(val)) : history;
+                renderHistory(filtered);
+            };
+
+            // 초기화 관련
+            function clearHistory() {
+                if (confirm("검색 기록만 삭제하시겠습니까?")) {
+                    localStorage.removeItem("recent_searches");
+                    renderHistory([]);
+                }
+            }
+            function clearAll() {
+                if (confirm("메모를 포함한 모든 데이터를 초기화합니까?")) {
+                    localStorage.clear();
+                    location.reload();
+                }
+            }
+
+            // 내보내기 / 가져오기 (기존 로직 유지 및 보강)
+            function exportHistory() {
+                const data = getLocalStorage("recent_searches");
+                if (!data.length) return alert("내보낼 기록이 없습니다.");
+                const blob = new Blob([JSON.stringify(data)], {type: "application/json"});
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = `h_backup_${new Date().getTime()}.json`;
+                a.click();
+            }
+
+            function importHistory() {
+                const f = document.createElement("input");
+                f.type = "file";
+                f.accept = ".json";
+                f.onchange = e => {
+                    const reader = new FileReader();
+                    reader.onload = ev => {
+                        try {
+                            const imported = JSON.parse(ev.target.result);
+                            if (Array.isArray(imported)) {
+                                const current = getLocalStorage("recent_searches");
+                                const merged = [...new Set([...imported, ...current])];
+                                setLocalStorage("recent_searches", merged);
+                                renderHistory();
+                                alert("가져오기 완료!");
+                            }
+                        } catch(err) { alert("잘못된 파일입니다."); }
+                    };
+                    reader.readAsText(e.target.files[0]);
+                };
+                f.click();
+            }
+
+            window.onload = () => renderHistory();
+        </script>
+    </body>
+</html>
