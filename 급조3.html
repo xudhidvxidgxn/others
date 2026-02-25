@@ -20,13 +20,12 @@
             }
             #container {
                 display: flex;
-                gap: 15px;
+                gap: 12px;
                 width: fit-content;
                 height: fit-content;
                 align-items: center;
             }
-            #container > #go,
-            #container > #input {
+            #container > * {
                 display: flex;
                 align-items: center;
                 justify-content: center;
@@ -52,7 +51,9 @@
                 width: 100%;
             }
             #input {
-                font-size: 16px;
+                font-size: 14px;
+                width: 220px;
+                flex-shrink: 0;
             }
             #history-list {
                 display: flex;
@@ -186,8 +187,9 @@
         </div>
         <a href="https:/hitomi.la"><h1>H</h1></a>
         <div id="container">
-            <input type="text" id="input" inputmode="numeric" pattern="[0-9]*" autofocus />
+            <input type="text" id="input" inputmode="text" pattern="[0-9]*" autofocus autocomplete="off" placeholder="번호 또는 메모 혹은 강호의 도리" />
             <button id="go" type="submit">이동하기</button>
+            <button id="change" type="submit" onclick="clearInput()">초기화</button>
         </div>
         <div id="btn-area">
             <button onclick="clearHistory()">기록 보관소 삭제</button>
@@ -206,18 +208,17 @@
 
             container.addEventListener("click", btnClick);
             container.addEventListener("keydown", btnClick);
-            container.addEventListener("input", (ev) => {
-                const target = ev.target;
+            input.addEventListener("input", autoSearch);
+            function autoSearch() {
                 /** @type {string} - input된 방식
-                 * * 그냥 입력하기 (insertText)
-                 * 붙여넣기 (insertFromPaste)
-                 * 되돌리기
-                 * 지우기
-                 * 등등... */
-                const type = ev.inputType;
-                if (!(target === input)) return;
+                     * * 그냥 입력하기 (insertText)
+                     * 붙여넣기 (insertFromPaste)
+                     * 되돌리기
+                     * 지우기
+                     * 등등... 
+                    const type = ev.inputType;*/
 
-                /** @type {string} - 정규식으로 숫자만 잘라냄 */
+                /** @type {string} - 정규식으로 숫자만 잘라냄 
                 const only_nums = target.value.replace(/[^0-9]+/g, "");
                 const max_length = 7;
                 let clipped = only_nums;
@@ -227,14 +228,20 @@
 
                 if (target.value !== clipped) {
                     target.value = clipped;
-                }
+                }*/
+                const val = input.value;
+                const clean_val = val.replace(/[^0-9]+/g, "");
 
                 const history = getLocalStorage("recent_searches");
-
-                const filtered = target.value ? history.filter((item) => item.startsWith(target.value)) : history;
+                const memo_history = getLocalStorage("memo_storage", {});
+                /* const filtered = target.value ? history.filter((item) => item.startsWith(target.value)) : history; */
+                const filtered = history.filter((item) => {
+                    const memo_text = memo_history[item] || "";
+                    return item.startsWith(val) || memo_text.includes(val) || (clean_val !== "" && item.startsWith(clean_val));
+                });
 
                 renderHistory(filtered);
-            });
+            }
             function btnClick(ev) {
                 if (ev instanceof KeyboardEvent) {
                     if (ev.key === "Enter") {
@@ -245,6 +252,10 @@
                 if (ev.type === "click" && ev.target !== button) return;
 
                 const val = input.value.trim();
+                if (!/^\d{7}$/.test(val)) {
+                    console.log("이동은 숫자 7자리만 가능합니다.");
+                    return;
+                }
                 if (!(input.value.length === 7)) {
                     clearInput();
                     return;
@@ -256,6 +267,13 @@
                 renderHistory();
                 window.open(`https://hitomi.la/galleries/${input.value}.html`);
                 clearInput();
+            }
+            /** 강호의 도리를 변환하는 함수 */
+            function change() {
+                /** @type {string} - input입니다. */
+                const txt = input.value;
+                input.value = txt.replace(/[^0-9]+/g, "");
+                input.focus();
             }
             /**
              * 저장소에 문자열 저장하는 함수 (저장소 기본값은 recent_searches)
@@ -290,6 +308,7 @@
             function clearInput() {
                 input.value = "";
                 input.focus();
+                autoSearch();
             }
 
             /** memoModalToggle:  메모 작성창 토글 함수
@@ -316,7 +335,7 @@
                 const memos = getLocalStorage("memo_storage", {});
                 const key = document.getElementById("memo-to").value;
                 const txt = document.getElementById("memo-txt").value;
-                if(!getLocalStorage("recent_searches").includes(key)) {
+                if (!getLocalStorage("recent_searches").includes(key)) {
                     console.log("이건 뭐 하는 짓이시죠?");
                     return;
                 }
@@ -536,12 +555,22 @@
             function setLocalStorage(storage_name = "recent_searches", data) {
                 localStorage.setItem(storage_name, JSON.stringify(data));
             }
+
             window.addEventListener("DOMContentLoaded", () => {
                 renderHistory();
                 document.querySelectorAll("a[href^='http']").forEach((a) => {
                     a["target"] = "_blank";
                     a["rel"] = "noopen noreferrer";
                 });
+            });
+            document.getElementById("memo-txt").addEventListener("keydown", (ev) => {
+                if (ev.key === "Enter") {
+                    saveMemo();
+                    memoModalToggle();
+                }
+                if (ev.key === "Escape") {
+                    memoModalToggle();
+                }
             });
         </script>
     </body>
