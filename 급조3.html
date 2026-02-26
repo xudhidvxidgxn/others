@@ -251,20 +251,14 @@
                 if (ev.type === "keydown" && ev.key !== "Enter") return;
                 if (ev.type === "click" && ev.target !== button) return;
 
-                const val = input.value.trim();
-                if (!/^\d{7}$/.test(val)) {
+                const val = input.value.replace(/[^0-9]+/, "");
+                if (!(val.length === 7)) {
                     console.log("이동은 숫자 7자리만 가능합니다.");
-                    return;
-                }
-                if (!(input.value.length === 7)) {
                     clearInput();
                     return;
                 }
 
-                const history = getLocalStorage("recent_searches");
-
                 saveSearchTerm(val);
-                renderHistory();
                 window.open(`https://hitomi.la/galleries/${input.value}.html`);
                 clearInput();
             }
