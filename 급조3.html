@@ -359,11 +359,6 @@
              */
             function renderHistory(custom_data = null) {
                 if (!history_list) return;
-
-                document.querySelectorAll("a[href^='http']").forEach((a) => {
-                    a["target"] = "_blank";
-                    a["rel"] = "noopen noreferrer";
-                });
                 
                 const history = custom_data || getLocalStorage("recent_searches");
                 const memo_history = getLocalStorage("memo_storage", {});
@@ -423,6 +418,11 @@
                     button_bar.appendChild(del);
                     div.appendChild(button_bar);
                     history_list.appendChild(div);
+
+                    document.querySelectorAll("a[href^='http']").forEach((a) => {
+                        a["target"] = "_blank";
+                        a["rel"] = "noopen noreferrer";
+                    });
                 });
             }
 
