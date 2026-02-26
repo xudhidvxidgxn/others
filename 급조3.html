@@ -360,6 +360,11 @@
             function renderHistory(custom_data = null) {
                 if (!history_list) return;
 
+                document.querySelectorAll("a[href^='http']").forEach((a) => {
+                    a["target"] = "_blank";
+                    a["rel"] = "noopen noreferrer";
+                });
+                
                 const history = custom_data || getLocalStorage("recent_searches");
                 const memo_history = getLocalStorage("memo_storage", {});
 
@@ -568,10 +573,6 @@
             }
             window.addEventListener("DOMContentLoaded", () => {
                 renderHistory();
-                document.querySelectorAll("a[href^='http']").forEach((a) => {
-                    a["target"] = "_blank";
-                    a["rel"] = "noopen noreferrer";
-                });
             });
             document.getElementById("memo-txt").addEventListener("keydown", (ev) => {
                 if (ev.key === "Enter") {
