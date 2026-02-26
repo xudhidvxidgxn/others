@@ -372,6 +372,8 @@
                     const a = document.createElement("a");
                     a["href"] = `https://hitomi.la/galleries/${item}.html`;
                     a.textContent = `${item}`;
+                    a["target"] = "_blank";
+                    a["rel"] = "noopen noreferrer";
                     a.classList.add("link");
                     a.addEventListener("click", () => {
                         saveSearchTerm(item);
@@ -419,10 +421,7 @@
                     div.appendChild(button_bar);
                     history_list.appendChild(div);
 
-                    document.querySelectorAll("a[href^='http']").forEach((a) => {
-                        a["target"] = "_blank";
-                        a["rel"] = "noopen noreferrer";
-                    });
+                    
                 });
             }
 
