@@ -286,7 +286,7 @@
                 if (term === history[0]) return;
                 const new_history = [term, ...history.filter((item) => item !== term)];
                 setLocalStorage("recent_searches", new_history);
-                renderHistory();
+                autoSearch();
             }
             function clearHistory() {
                 if (history_list.children.length >= 0) {
