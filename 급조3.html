@@ -243,15 +243,10 @@
                 renderHistory(filtered);
             }
             function btnClick(ev) {
-                if (ev instanceof KeyboardEvent) {
-                    if (ev.key === "Enter") {
-                        ev.preventDefault();
-                    } else return;
-                }
                 if (ev.type === "keydown" && ev.key !== "Enter") return;
                 if (ev.type === "click" && ev.target !== button) return;
 
-                const val = input.value.replace(/[^0-9]+/, "");
+                const val = input.value.replace(/[^0-9]+/g, "");
                 if (!(val.length === 7)) {
                     console.log("이동은 숫자 7자리만 가능합니다.");
                     clearInput();
