@@ -53,7 +53,8 @@
             const minus = /** @type {HTMLButtonElement} */ (document.getElementById("minus"));
             const reset = /** @type {HTMLButtonElement} */ (document.getElementById("reset"));
 
-            let timer = null;
+            let delayTimer = null;
+            let repeatTimer = null;
 
             /** input값에 따라 파스칼 삼각형 만들기 */
             function displayPascal() {
@@ -114,7 +115,7 @@
             }
             /** 다다다락- 실행하는 함수 */
             function startRepeat(amount) {
-                if (timer) return; // 이미 돌고 있으면 중복 실행 방지
+                if (delayTimer) return; // 이미 돌고 있으면 중복 실행 방지
                 let num = parseInt(input.value);
                 if (isNaN(num) || num < 0) num = 0;
                 
@@ -123,18 +124,22 @@
                 displayPascal();
                 
                 // 2. 0.1초(100ms)마다 계속 실행
-                timer = setInterval(() => {
-                    let num = parseInt(input.value);
-                    if (isNaN(num) || num < 0) num = 0;
-                    input.value = String(num + amount);
-                    displayPascal();
-                }, 100);
+                delayTimer = setTimeout(() => {
+                    repeatTimer = setInterval(() => {
+                        let num = parseInt(input.value);
+                        if (isNaN(num) || num < 0) num = 0;
+                        input.value = String(num + amount);
+                        displayPascal();
+                    }, 50);
+                }, 500);
             }
 
             /** 타이머 멈추는 함수 */
             function stopRepeat() {
-                clearInterval(timer);
-                timer = null;
+                clearTimeout(delayTimer);
+                clearInterval(repeatTimer);
+                delayTimer = null;
+                repeatTimer = null;
             }
 
             // 값이 바뀔 때마다 실행하기
