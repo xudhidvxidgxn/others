@@ -21,15 +21,33 @@
             #display {
                 text-align: center;
             }
+            div {
+                display: flex;
+                gap: 10px;
+            }
+            div > button {
+                padding: 5px 8px;
+            }
+            div > input {
+                padding: 5px 8px;
+            }
         </style>
     </head>
     <body>
-        <input type="text" id="input" autocomplete="off" inputmode="numeric"/>
+        <div>
+            <input type="text" id="input" autocomplete="off" inputmode="numeric" value="1" />
+            <button id="plus">+1</button>
+            <button id="minus">-1</button>
+            <button id="reset">초기회</button>
+        </div>
         <pre id="display"></pre>
         <script>
             // @ts-check
-            const input = /** @type {HTMLInputElement} - id로 가져온 input입니다 */ (document.getElementById("input"));
-            const display = /** @type {HTMLPreElement} - id로 가져온 pre입니다 */ (document.getElementById("display"));
+            const input = /** @type {HTMLInputElement} */ (document.getElementById("input"));
+            const display = /** @type {HTMLPreElement} */ (document.getElementById("display"));
+            const plus = /** @type {HTMLButtonElement} */ (document.getElementById("plus"));
+            const minus = /** @type {HTMLButtonElement} */ (document.getElementById("minus"));
+            const reset = /** @type {HTMLButtonElement} */ (document.getElementById("reset"));
 
             /** input값에 따라 파스칼 삼각형 만들기 */
             function displayPascal() {
@@ -66,9 +84,35 @@
                 // 화면에 그리기
                 display.textContent = triangle.map((row) => row.join(" ")).join("\n");
             }
+            /** input 값 +1 */
+            function inputPlus() {
+                // input.valueAsNumber
+                let num = parseInt(input.value);
+                if (isNaN(num)) num = 0;
+                input.value = String(num + 1);
+                displayPascal();
+            }
+            /** input 값 -1 */
+            function inputMinus() {
+                // input.valueAsNumber
+                let num = parseInt(input.value);
+                if (isNaN(num)) num = 0;
+                if (num > 1) input.value = String(num - 1);
+                else input.value = String(0);
+                displayPascal();
+            }
+            /** input 값 초기화 */ 
+            function inputReset() {
+                input.value = "1";
+                displayPascal();
+            }
 
             // 값이 바뀔 때마다 실행하기
+            window.addEventListener("load", displayPascal);
             input.addEventListener("input", displayPascal);
+            plus.addEventListener("click", inputPlus);
+            minus.addEventListener("click", inputMinus);
+            reset.addEventListener("click", inputReset);
         </script>
     </body>
 </html>
