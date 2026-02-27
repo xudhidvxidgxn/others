@@ -2204,28 +2204,26 @@
                         </div>
                     </div>
                 </div>
-                <!--<div class="day short end">
-                    <a href="https://blacktoon.me/webtoon/00000.html" class="day" ><div class="title">
-
-                    </div></a>
-                    <input type="checkbox" name="modal-toggle" id="toggle$" hidden /><label for="toggle$">정보</label>
-                    <div id="modal$">
-                        <label for="toggle$" class="label"></label>
-                        <div class="modal-info">
-                            <h1>등장인물</h1>
-                            <div class="character-list">
-                                <div class="character">
-                                    <div class="title">
-                                        추가 예정
+                <template id="new-content">
+                    <div class="day short end">
+                        <a href="https://blacktoon.me/webtoon/00000.html" class="day"><div class="title"></div></a>
+                        <input type="checkbox" name="modal-toggle" id="toggle$" hidden /><label for="toggle$">정보</label>
+                        <div id="modal$">
+                            <label for="toggle$" class="label"></label>
+                            <div class="modal-info">
+                                <h1>등장인물</h1>
+                                <div class="character-list">
+                                    <div class="character">
+                                        <div class="title">추가 예정</div>
+                                        <ul class="episodes">
+                                            <a href="https://blacktoon.me/webtoons/00000/0000000.html"><li class="episode good first">n화</li></a>
+                                        </ul>
                                     </div>
-                                    <ul class="episodes">
-                                        <a href="https://blacktoon.me/webtoons/00000/0000000.html"><li class="episode good first">n화</li></a>
-                                    </ul>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>-->
+                </template>
             </section>
         </div>
         <script>
@@ -2236,19 +2234,19 @@
                 const month = String(today.getMonth() + 1).padStart(2, "0");
                 const day = String(today.getDate()).padStart(2, "0");
                 const dateStr = `${year}-${month}-${day}`;
-                
+
                 // 요일 (ddd)
                 const days = ["일", "월", "화", "수", "목", "금", "토"];
                 const dayName = days[today.getDay()];
                 /*const dayName = days[today.getDay()]+"요일";*/
-                
+
                 const hour = String(today.getHours()).padStart(2, "0");
                 const min = String(today.getMinutes()).padStart(2, "0");
                 const sec = String(today.getSeconds()).padStart(2, "0");
 
                 const timeStr = `${hour}시`;
                 /*const timeStr = `${hour}시 ${min}분 ${sec}초`;*/
-                
+
                 const result = `${dateStr} (${dayName}) ${timeStr}`;
 
                 // h5에 삽입
