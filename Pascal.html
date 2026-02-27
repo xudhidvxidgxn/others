@@ -118,11 +118,11 @@
                 if (delayTimer) return; // 이미 돌고 있으면 중복 실행 방지
                 let num = parseInt(input.value);
                 if (isNaN(num) || num < 0) num = 0;
-                
+
                 // 1. 일단 한 번 바로 실행
                 input.value = String(num + amount);
                 displayPascal();
-                
+
                 // 2. 0.1초(100ms)마다 계속 실행
                 delayTimer = setTimeout(() => {
                     repeatTimer = setInterval(() => {
@@ -141,6 +141,31 @@
                 delayTimer = null;
                 repeatTimer = null;
             }
+
+            /* * 꾹 누르기 기계
+             * @param {() => void} action 실행할 함수 (stepUp 등)
+             */
+            //function createLongPressHandler(action) {
+            //    let delayTimer = null;
+            //    let repeatTimer = null;
+            //
+            //    const stop = () => {
+            //        clearTimeout(delayTimer);
+            //        clearInterval(repeatTimer);
+            //        delayTimer = null;
+            //        repeatTimer = null;
+            //    };
+            //
+            //    const start = () => {
+            //        stop(); // 혹시 돌고 있을지 모를 타이머 초기화
+            //        action(); // 딸깍 실행
+            //        delayTimer = setTimeout(() => {
+            //            repeatTimer = setInterval(action, 100); // 다다다락 실행
+            //        }, 500);
+            //    };
+            //
+            //    return { start, stop };
+            //}
 
             // 값이 바뀔 때마다 실행하기
             window.addEventListener("load", displayPascal);
