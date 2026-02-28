@@ -144,37 +144,36 @@
                 repeatTimer = null;
             }
 
-            /* * 꾹 누르기 기계
+            /** * 꾹 누르기 기계
              * @param {() => void} action 실행할 함수 (stepUp 등)
              */
-            //function createLongPressHandler(action) {
-            //    let delayTimer = null;
-            //    let repeatTimer = null;
-            //
-            //    const stop = () => {
-            //        clearTimeout(delayTimer);
-            //        clearInterval(repeatTimer);
-            //        delayTimer = null;
-            //        repeatTimer = null;
-            //    };
-            //
-            //    const start = () => {
-            //        stop(); // 혹시 돌고 있을지 모를 타이머 초기화
-            //        action(); // 딸깍 실행
-            //        delayTimer = setTimeout(() => {
-            //            repeatTimer = setInterval(action, 100); // 다다다락 실행
-            //        }, 500);
-            //    };
-            //
-            //    return { start, stop };
-            //}
+            function createLongPressHandler(action) {
+                let delayTimer = null;
+                let repeatTimer = null;
+            
+                const stop = () => {
+                    clearTimeout(delayTimer);
+                    clearInterval(repeatTimer);
+                    delayTimer = null;
+                    repeatTimer = null;
+                };
+            
+                const start = () => {
+                    stop(); // 혹시 돌고 있을지 모를 타이머 초기화
+                    action(); // 딸깍 실행
+                    delayTimer = setTimeout(() => {
+                        repeatTimer = setInterval(action, 100); // 다다다락 실행
+                    }, 500);
+                };
+            
+                return { start, stop };
+            }
 
             // 값이 바뀔 때마다 실행하기
             window.addEventListener("load", displayPascal);
             input.addEventListener("input", displayPascal)
             plus.addEventListener("mousedown", () => startRepeat(1));
-            plus.addEventListener("mouseup", stopRepeat);
-            plus.addEventListener("mouseleave", stopRepeat);
+            window.addEventListener("mouseup", stopRepeat);
             minus.addEventListener("click", inputMinus);
             reset.addEventListener("click", inputReset);
         </script>
