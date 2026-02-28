@@ -541,28 +541,32 @@
                                     throw new Error("올바른 백업 파일 형식이 아닙니다.");
                                 }
 
+
                                 const { code, memo } = importedData;
 
-                                if (!Array.isArray(code) || !Array.isArray(memo)) {
-                                    throw new Error("데이터 구조가 손상되었습니다.");
+                                // 1. [구조 검증] code는 배열, memo는 (null이 아닌) 객체인지 확인
+                                if (!Array.isArray(code) || typeof memo !== 'object' || memo === null || Array.isArray(memo)) {
+                                    throw new Error("데이터 구조가 손상되었습니다 (code는 배열, memo는 객체여야 합니다).");
                                 }
 
-                                // 3. [개별 검증] code 항목이 7자리 숫자인지 확인 (선택 사항)
+                                // 2. [개별 검증] code 항목 검사 (7자리 숫자)
                                 const isCodeValid = code.every((item) => /^[0-9]{7}$/.test(item));
                                 if (!isCodeValid) throw new Error("유효하지 않은 코드 형식이 포함되어 있습니다.");
 
-                                // 4. 기존 데이터와 병합 (중복 제거)
-                                // 최근 검색 기록(code) 병합
+                                // 3. [개별 검증] memo 항목 검사 (모든 값(value)이 문자열인지)
+                                const isMemoValid = Object.values(memo).every(val => typeof val === 'string');
+                                if (!isMemoValid) throw new Error("메모의 내용 중 문자열이 아닌 것이 섞여 있습니다.");
+
+                                // 4. 데이터 병합
+                                // [배열 병합] 최근 검색 기록 (Set으로 중복 제거)
                                 const currentHistory = getLocalStorage("recent_searches") || [];
                                 const mergedHistory = [...new Set([...code, ...currentHistory])];
 
-                                // 메모(memo) 병합
-                                const currentMemos = getLocalStorage("memo_storage") || [];
-                                // 메모는 객체 배열일 가능성이 높으므로, 단순 Set보다는 중복 체크 로직이 필요할 수 있습니다.
-                                // 여기서는 일단 단순 합치기 후 중복 제거 예시입니다.
-                                const mergedMemos = [...new Set([...memo, ...currentMemos])];
+                                // [객체 병합] 메모 (스프레드 연산자로 병합, 키가 같으면 새 데이터가 덮어씀)
+                                const currentMemos = getLocalStorage("memo_storage") || {}; 
+                                const mergedMemos = { ...currentMemos, ...memo };
 
-                                // 5. 로컬 스토리지 저장 및 UI 갱신
+                                // 5. 저장 및 UI 갱신
                                 setLocalStorage("recent_searches", mergedHistory);
                                 setLocalStorage("memo_storage", mergedMemos);
                                 
@@ -570,7 +574,7 @@
                                 if (typeof renderHistory === 'function') renderHistory();
                                 if (typeof renderMemos === 'function') renderMemos(); // 메모 렌더링 함수가 있다면 추가
 
-                                alert(`성공적으로 데이터를 가져왔습니다!\n(기록: ${code.length}개, 메모: ${memo.length}개)`);
+                                alert(`성공적으로 데이터를 가져왔습니다!\n(기록: ${code.length}개, 메모: ${Object.keys(memo).length}개)`);
                                 resolve(true);
                             } catch (err) {
                                 alert(`가져오기 실패: ${err.message}`);
@@ -582,7 +586,7 @@
 
                     input.click();
                 });
-}
+            }
             //function importHistory() {
             //    return new Promise((resolve) => {
             //        // 1. 파일 선택용 가상 input 생성
