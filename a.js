@@ -7,11 +7,14 @@ const template = /** @type {HTMLTemplateElement} */ (document.getElementById("te
 let count = 0;
 
 /** @type {Object[]} */
-
+const data = [];
 
 /** input 데이터에 기반한 데이터 쪼가리들 만들어버리기 */
 function saveData() {
-    
+    const groups = document.querySelectorAll(".input-group");
+    groups.forEach((group) => {
+
+    });
 }
 
 /** 수집된 데이터를 바탕으로 복잡한 HTML 구조를 텍스트로 변환 */
