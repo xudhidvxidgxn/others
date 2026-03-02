@@ -10,14 +10,76 @@
                 padding: 0;
                 box-sizing: border-box;
             }
-            html, body {
+            html,
+            body {
                 width: 100vw;
                 height: 100vh;
+            }
+            body {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                padding: 20px;
+            }
+            input {
+                padding: 5px 8px;
+            }
+
+            #input-bar {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                gap: 10px;
+            }
+            .row {
+                display: flex;
+                gap: 10px;
+                align-items: center;
+                width: 100%;
+                justify-content: space-between;
+            }
+            .row > label {
+                font-size: 14px;
+            }
+            .input-group {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                width: 18rem;
+                gap: 10px;
+            }
+            #add {
+                padding: 2px 8px;
+            }
+            #add {
+                margin-bottom: 20px;
             }
         </style>
     </head>
     <body>
-        <input type="text" id="input">
+        <button id="add" onclick="addInput()">추가</button>
+        <div id="input-bar"></div>
+        <template id="template">
+            <div class="input-group">
+                <div class="row">
+                    <label>제목</label>
+                    <input type="text" class="input-title" placeholder="웹툰 제목" />
+                </div>
+                <div class="row">
+                    <label>번호(ID)</label>
+                    <input type="text" class="input-id" placeholder="00000" />
+                </div>
+                <div class="row">
+                    <label>모달 고유번호</label>
+                    <input type="text" class="input-num" placeholder="숫자 입력" />
+                </div>
+                <hr />
+            </div>
+        </template>
+
+        <pre id="display"></pre>
         <script src="a.js"></script>
     </body>
 </html>
