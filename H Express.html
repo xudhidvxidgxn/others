@@ -249,7 +249,7 @@
 
                 const val = input.value.replace(/[^0-9]+/g, "");
                 if (!(val.length === 7)) {
-                    alert("이동은 숫자 7자리만 가능합니다.");
+                    alert(`형식이 뭔가 이상합니다. (인식된 형식: ${val})`);
                     clearInput();
                     return;
                 }
