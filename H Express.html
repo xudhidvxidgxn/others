@@ -224,7 +224,7 @@
                 const max_length = 7;
                 let clipped = only_nums;
                 if (clipped.length > max_length) {
-                    clipped = clipped.slice(-max_length);
+                    clipped = clipped.slice(0, max_length);
                 }
 
                 if (target.value !== clipped) {
@@ -249,7 +249,7 @@
 
                 const val = input.value.replace(/[^0-9]+/g, "");
                 if (!(val.length === 7)) {
-                    console.log("이동은 숫자 7자리만 가능합니다.");
+                    alert(`형식이 뭔가 이상합니다. (인식된 형식: ${val})`);
                     clearInput();
                     return;
                 }
