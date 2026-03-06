@@ -11,10 +11,6 @@
                 box-sizing: border-box;
                 user-select: none;
             }
-            pre,
-            .right-menu {
-                user-select: all;
-            }
             html,
             body {
                 width: 100vw;
@@ -47,7 +43,6 @@
     </head>
     <body>
         <div class="left-menu">
-            <button>추가</button>
             <input type="text" class="input" autofocus />
             <div class="content-list"></div>
             <template id="input-temp">
@@ -202,9 +197,17 @@
                     if ("select" in lastInput) lastInput.select();
                 }
             });
-            window.addEventListener("contextmenu", (ev) => ev.preventDefault());
 
-            document.querySelector("button")?.addEventListener("click", addInput);
+            // 특정 문자열을 바로 클립보드에 복사
+            function copyToClipboard(text) {
+                navigator.clipboard.writeText(text).then(() => {
+                    console.log("복사 완료!");
+                });
+            }
+            window.addEventListener("contextmenu", (ev) => ev.preventDefault());
+            document.querySelector(".right-menu")?.addEventListener("click", (ev) => {
+                copyToClipboard(display.textContent);
+            });
 
             // 초기 실행
             render();
