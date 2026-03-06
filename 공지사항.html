@@ -33,11 +33,29 @@
                 flex-direction: column;
                 align-items: center;
                 gap: 20px;
-                width: 100%;
+                width: 50%;
                 height: 100%;
+                flex-shrink: 0;
+            }
+            .left-menu {
+                border-right: 1px solid #e2e2e2;
             }
             input {
                 padding: 5px 8px;
+            }
+            @media screen and (max-width: 1000px) {
+                [class*="menu"] {
+                    height: auto;
+                }
+                body {
+                    flex-direction: column;
+                    gap: 30px;
+                }
+                .left-menu {
+                    border-right: none;
+                    border-bottom: 1px solid #e2e2e2;
+                    padding-bottom: 10px;
+                }
             }
         </style>
     </head>
@@ -83,25 +101,25 @@
 
             /** * [ACTION] 추가 버튼 클릭 시 데이터 늘리기 */
             function addInput() {
-                contentData.push(""); // 데이터 배열에 새 칸 추가
+                contentData.push(""); // 데이터 추가 (새 인덱스는 length - 2가 됨)
 
-                const clone = /** @type {DocumentFragment} */ (input_temp.content.cloneNode(true));
-                const new_input = /** @type {HTMLInputElement} */ (clone.querySelector(".content"));
-                content_list?.appendChild(clone);
-                new_input?.focus();
-
+                // 템플릿 복사 로직 대신, 깔끔하게 renderLeft()를 호출해버리는 게 정신건강에 좋습니다.
+                renderLeft();
                 render();
+
+                // 마지막 인풋에 포커스
+                const new_input = /** @type {HTMLInputElement} */ (document.querySelector(".content:last-child"));
+                new_input?.focus();
             }
             /** [RENDER-LEFT] 데이터 배열의 길이에 맞춰 인풋창 리스트를 쇄신함 */
             function renderLeft() {
-                // 제목(index 0)을 제외한 나머지 데이터로 인풋 HTML 생성
+                // 0번(제목) 제외한 데이터로 인풋 생성
                 const inputHTML = contentData
                     .slice(1)
-                    .map(
-                        (text, idx) => `
-        <input type="text" class="content" value="${text}" data-index="${idx}">
-    `,
-                    )
+                    .map((text, idx) => {
+                        // 여기에 data-index="${idx}"가 반드시 들어가야 합니다!
+                        return `<input type="text" class="content" value="${text}" data-index="${idx}">`;
+                    })
                     .join("");
 
                 if (content_list) {
@@ -109,22 +127,28 @@
                 }
             }
 
-            /** * [EVENT] 실시간 입력 감지 및 데이터 업데이트
-             */
+            /** * [EVENT] 실시간 입력 감지 및 데이터 업데이트 */
             window.addEventListener("input", (ev) => {
                 const target = /** @type {HTMLInputElement} */ (ev.target);
+                if (!target.matches("input")) return;
 
+                // 1. 공통 필터링 (공백 제거, 10자 제한)
+                let val = target.value.replace(/\s/g, "");
+                if (val.length > 10) val = val.slice(0, 10);
+                target.value = val; // 화면에 즉시 반영
+
+                // 2. 데이터 센터(배열) 동기화
                 if (target.matches(".input")) {
-                    // 제목 입력 시 (공백 제거 후 저장)
-                    contentData[0] = target.value.replace(/\s/g, "");
-                    target.value = contentData[0]; // 화면에도 공백 제거된 값 반영
+                    contentData[0] = val;
                 } else if (target.matches(".content")) {
-                    // 추가된 리스트 인풋 입력 시
-                    const allContents = [...document.querySelectorAll(".content")];
-                    const index = allContents.indexOf(target);
-                    contentData[index + 1] = target.value; // 0번이 제목이므로 +1
+                    const idxStr = target.dataset.index;
+                    if (idxStr !== undefined) {
+                        const index = parseInt(idxStr);
+                        contentData[index + 1] = val; // 데이터 배열 업데이트
+                    }
                 }
 
+                // 3. 오른쪽 결과창만 실시간 업데이트 (포커스 유지를 위해 renderLeft는 부르지 않음!)
                 render();
             });
             window.addEventListener("keydown", (ev) => {
@@ -182,7 +206,15 @@
                     }
                 }
                 if (ev.key === "Delete") {
-                    if (contentData.length <= 1) return;
+                    ev.preventDefault();
+                    // if (contentData.length <= 1) return;
+                    if (ev.target === input_main) {
+                        input_main.value = "";
+                        contentData[0] = "";
+                        render();
+                        renderLeft();
+                        return;
+                    }
 
                     // 데이터 삭제 (마지막 요소 제거)
                     contentData.pop();
@@ -191,7 +223,6 @@
                     render();
                     renderLeft();
 
-                    // 마지막 인풋에 포커스 (상남자식 배려)
                     const lastInput = /** @type {HTMLInputElement} */ (document.querySelector(".content:last-child")) || input_main;
                     lastInput.focus();
                     if ("select" in lastInput) lastInput.select();
