@@ -201,7 +201,7 @@
             // 특정 문자열을 바로 클립보드에 복사
             function copyToClipboard(text) {
                 navigator.clipboard.writeText(text).then(() => {
-                    console.log("복사 완료!");
+                    alert(`글이 클립보드에 저장되었습니다.`);
                 });
             }
             window.addEventListener("contextmenu", (ev) => ev.preventDefault());
