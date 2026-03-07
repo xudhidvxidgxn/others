@@ -71,49 +71,33 @@ export const strip = (str, chars = "\\s") => {
     return str.replace(pattern, "");
 };
 /**
- * 5. getLocalStorage (안전한 데이터 불러오기)
- * localStorage에서 데이터를 가져오거나, 데이터가 없으면 초기화 후 반환합니다.
- * @param {string} storage_name - 로컬스토리지 키 이름
- * @param {any} [default_value=[]] - 데이터가 없을 때 저장할 기본값
+ * 저장소 이름 받아서 가져옵니다
+ * @param {string} [storage_name = "recent_searches"] - 저장소의 이름 (문자열이어야 해!)
+ * @param {any} default_value - 데이터가 없을 경우 저장할 초기값 (기본값: [])
  * @returns {any} 파싱된 데이터 객체 또는 배열
  */
-export const getLocalStorage = (storage_name, default_value = []) => {
+function getLocalStorage(storage_name = "recent_searches", default_value = []) {
     const data = localStorage.getItem(storage_name);
 
-    // 1. 창고에 데이터가 아예 없으면 기본값을 저장하고 바로 반환합니다.
+    // 데이터가 없으면 초기값을 저장하고 반환합니다.
     if (data === null) {
-        setLocalStorage(storage_name, default_value);
         return default_value;
     }
 
-    // 2. 데이터가 있으면 JSON으로 변환합니다. (깨진 데이터 대비 try-catch)
+    // 데이터가 있으면 JSON으로 변환해서 반환합니다.
     try {
         return JSON.parse(data);
     } catch (e) {
-        console.error(`[getLocalStorage] '${storage_name}' 파싱 실패:`, e);
+        console.error("localStorage 파싱 에러:", e);
         return default_value;
     }
-};
+}
 
 /**
- * 6. setLocalStorage (데이터 저장하기)
  * 데이터를 JSON 문자열로 변환하여 localStorage에 저장합니다.
- * @param {string} storage_name - 로컬스토리지 키 이름
- * @param {any} data - 저장할 데이터 (객체, 배열, 숫자 등)
+ * @param {string} [storage_name=recent_searches] - 로컬스토리지 키 이름 (없으면 recent_searches)
+ * @param {any} data - 저장할 데이터 (객체나 배열 등)
  */
-export const setLocalStorage = (storage_name, data) => {
+function setLocalStorage(data, storage_name = "recent_searches") {
     localStorage.setItem(storage_name, JSON.stringify(data));
-};
-
-/* 
-이벤트 위임(이건 배워서 알겠지만) : 
-    이벤트를 식별할 요소의 부모에 addEventListener()를 걸고, callback에서 ev를 받아 ev.target으로 이벤트가 발생한 요소를 식별한다.
-
-preventDefault() : 
-    통상적인 키 이벤트가 아닌 내가 직접 이벤트를 실행하게 하기 위해서는 필수이다.
-
-.앞을 this로 하고 싶다면 일반 함수를 쓰고, 그렇지 않은 경우에는 화살표 함수를 씁니다.
-예약어는 당연히 함수 이름으로 안 되고요.
-
-
- */
+}
