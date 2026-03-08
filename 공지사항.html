@@ -141,14 +141,16 @@
                 if (!target.matches("input")) return;
 
                 // 1. 공통 필터링 (공백 제거, 10자 제한)
-                let val = target.value.replace(/\s/g, "");
-                target.value = val; // 화면에 즉시 반영
-
+                let val;
+                
                 // 2. 데이터 센터(배열) 동기화
                 if (target.matches(".input")) {
+                    val = target.value.replace(/\s/g, "");
+                    target.value = val; // 화면에 즉시 반영
                     contentData[0] = val;
                 } else if (target.matches(".content")) {
                     const idxStr = target.dataset.index;
+                    val = target.value;
                     if (idxStr !== undefined) {
                         const index = parseInt(idxStr);
                         contentData[index + 1] = val; // 데이터 배열 업데이트
