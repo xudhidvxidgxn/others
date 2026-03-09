@@ -244,8 +244,35 @@
                     alert(`글이 클립보드에 저장되었습니다.`);
                 });
             }
+            function smartCopy(text) {
+                    // 1. 임시 textarea 생성 (상남자의 비밀 병기)
+                    const textArea = document.createElement("textarea");
+                    textArea.value = text;
+
+                    // 화면에 안 보이게 숨기기 (하지만 존재는 해야 함)
+                    textArea.style.position = "absolute";
+                    textArea.style.left = "-9999px";
+                    textArea.style.top = "0";
+                    document.body.appendChild(textArea);
+
+                    // 2. 텍스트 선택 및 복사 (모바일 핵심 로직)
+                    textArea.select();
+                    textArea.setSelectionRange(0, 99999); // 아이폰(iOS) 대응용
+
+                    try {
+                        const successful = document.execCommand('copy');
+                        if (successful) alert("복사 성공! 🚀");
+                        else throw new Error();
+                    } catch (err) {
+                        // 마지막 수단: 직접 선택 유도
+                        alert("복사 실패. 텍스트를 길게 눌러 직접 복사해주세요.");
+                    }
+
+                    document.body.removeChild(textArea);
+                }
             document.querySelector(".right-menu")?.addEventListener("click", (ev) => {
-                copyToClipboard(display.textContent);
+                // copyToClipboard(display.textContent);
+                smartCopy(display.textContent);
             });
 
             // 초기 실행
