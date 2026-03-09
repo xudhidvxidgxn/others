@@ -13,7 +13,7 @@
             }
             body {
                 display: flex;
-                padding: 20px;
+                padding: 0 20px;
                 padding-bottom: 10px;
                 align-items: stretch;
                 min-height: 100vh; /* 화면 전체 높이를 최소로 잡음 */
@@ -29,12 +29,12 @@
                 display: flex;
                 flex-direction: column;
                 align-items: center;
-                gap: 20px;
                 width: 50%;
                 flex: 1;
-                padding: 0 20px;
+                padding: 20px;
             }
             .left-menu {
+                gap: 20px;
                 border-right: 1px solid #e2e2e2;
             }
             .right-menu {
@@ -51,6 +51,7 @@
             }
             @media screen and (max-width: 1000px) {
                 [class*="menu"] {
+                    width: 100%;
                     height: auto;
                 }
                 body {
@@ -60,9 +61,6 @@
                     border-right: none;
                     border-bottom: 1px solid #e2e2e2;
                     padding-bottom: 20px;
-                }
-                .right-menu {
-                    width: 100%;
                 }
             }
         </style>
@@ -76,6 +74,7 @@
             </template>
         </div>
         <div class="right-menu">
+            <button id="copy-btn">복사하기</button>
             <pre id="display"></pre>
         </div>
         <script>
@@ -270,7 +269,7 @@
 
                     document.body.removeChild(textArea);
                 }
-            document.querySelector(".right-menu")?.addEventListener("click", (ev) => {
+            document.querySelector("#copy-btn")?.addEventListener("click", (ev) => {
                 // copyToClipboard(display.textContent);
                 smartCopy(display.textContent);
             });
