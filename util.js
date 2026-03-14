@@ -77,9 +77,9 @@ export const strip = (str, chars = "\\s") => {
  * @returns {any} 파싱된 데이터 객체 또는 배열
  */
 function getLocalStorage(storage_name, default_value = []) {
-    if (!storage_name || storage_name == "") {
-        return;
-    }
+    // if (!storage_name || storage_name == "") {
+    //     return;
+    // }
     const data = localStorage.getItem(storage_name);
 
     // 데이터가 없으면 초기값을 저장하고 반환합니다.
@@ -98,9 +98,9 @@ function getLocalStorage(storage_name, default_value = []) {
 
 /**
  * 데이터를 JSON 문자열로 변환하여 localStorage에 저장합니다.
- * @param {string} [storage_name=recent_searches] - 로컬스토리지 키 이름 (없으면 recent_searches)
+ * @param {string} storage_name - 로컬스토리지 키 이름 (없으면 recent_searches)
  * @param {any} data - 저장할 데이터 (객체나 배열 등)
  */
-function setLocalStorage(data, storage_name = "recent_searches") {
+function setLocalStorage(data, storage_name) {
     localStorage.setItem(storage_name, JSON.stringify(data));
 }
