@@ -101,6 +101,10 @@ function getLocalStorage(storage_name, default_value = []) {
  * @param {string} storage_name - 로컬스토리지 키 이름 (없으면 recent_searches)
  * @param {any} data - 저장할 데이터 (객체나 배열 등)
  */
-function setLocalStorage(data, storage_name) {
+function setLocalStorage(storage_name, data = null) {
+    if (!data) {
+        console.log("data가 비었습니다.");
+        return;
+    }
     localStorage.setItem(storage_name, JSON.stringify(data));
 }
