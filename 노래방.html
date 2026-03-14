@@ -19,13 +19,29 @@
                 padding: 20px;
             }
             #display {
-                display: flex;
-                flex-direction: column;
+                display: grid;
+                grid-template-columns: repeat(1, 1fr);
                 gap: 10px;
-                align-items: center;
-                justify-content: center;
-                width: 500px;
+                width: 95%;
+                max-width: 1000px;
                 margin-top: 20px;
+            }
+            #controller {
+                display: flex;
+                width: 100%;
+                max-width: 700px;
+                align-items: stretch;
+            }
+            #input-num {
+                padding: 8px 12px;
+                flex-grow: 1;
+                margin-right: 10px;
+                flex-shrink: 0.8;
+                min-width: 0;
+            }
+            #go {
+                padding: 0 14px;
+                flex-shrink: 0;
             }
             .content {
                 display: flex;
@@ -61,8 +77,8 @@
     </head>
     <body>
         <div id="controller">
-            <input type="text" id="input-num" inputmode="numeric" />
-            <input type="text" id="input-title" />
+            <input type="text" id="input-num" placeholder="번호 또는 제목 입력" />
+            <button id="go">go?</button>
         </div>
         <div id="display"></div>
         <script src="1.js"></script>

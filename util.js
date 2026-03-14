@@ -72,11 +72,14 @@ export const strip = (str, chars = "\\s") => {
 };
 /**
  * 저장소 이름 받아서 가져옵니다
- * @param {string} [storage_name = "recent_searches"] - 저장소의 이름 (문자열이어야 해!)
+ * @param {string} storage_name = "recent_searches" - 저장소의 이름 (문자열이어야 해!)
  * @param {any} default_value - 데이터가 없을 경우 저장할 초기값 (기본값: [])
  * @returns {any} 파싱된 데이터 객체 또는 배열
  */
-function getLocalStorage(storage_name = "recent_searches", default_value = []) {
+function getLocalStorage(storage_name, default_value = []) {
+    if (!storage_name || storage_name == "") {
+        return;
+    }
     const data = localStorage.getItem(storage_name);
 
     // 데이터가 없으면 초기값을 저장하고 반환합니다.
