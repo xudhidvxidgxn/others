@@ -1,0 +1,116 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    user-select: none;
+}
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    padding: 20px;
+}
+#display {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 10px;
+    width: 95%;
+    max-width: 1000px;
+    margin-top: 20px;
+}
+#controller {
+    display: flex;
+    width: 100%;
+    max-width: 700px;
+    align-items: stretch;
+}
+#input-num {
+    padding: 8px 12px;
+    flex-grow: 1;
+    margin-right: 10px;
+    flex-shrink: 0.8;
+    min-width: 0;
+}
+#go {
+    padding: 0 14px;
+    flex-shrink: 0;
+}
+#modal-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgb(0, 0, 0, 0.5);
+    user-select: none;
+    z-index: 1000;
+
+    visibility: hidden;
+    opacity: 0;
+    transition:
+        visibility 0.3s,
+        opacity 0.3s;
+}
+#modal-content {
+    display: none;
+    flex-direction: column;
+    padding: 20px;
+    width: 90%;
+    max-width: 800px;
+    user-select: none;
+    background-color: #fff;
+}
+#modal-area.activated {
+    visibility: visible;
+    opacity: 1;
+}
+#modal-area.activated #modal-content {
+    display: flex;
+    animation: modalPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes modalPop {
+    from {
+        transform: scale(0.6);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 0;
+    }
+}
+.content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 10px;
+    border-radius: 15px;
+    background-color: #dfdfdf;
+}
+.content > .content-no {
+    font-size: 24px;
+    font-weight: 700;
+}
+.content > .content-title {
+    font-size: 16px;
+}
+.content > .content-link {
+    font-size: 14px;
+    color: rgb(0, 0, 0, 0.5);
+}
+.btn-bar {
+    display: flex;
+    width: 100%;
+    gap: 10px;
+    margin-top: 5px;
+}
+.btn-bar > button {
+    flex-grow: 1;
+}

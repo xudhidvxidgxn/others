@@ -5,6 +5,7 @@ const input_num = /** @type {HTMLInputElement} */ (
 const display = /** @type {HTMLDivElement} */ (
     document.querySelector("#display")
 );
+const modal_area = /** @type {HTMLDivElement} */ (document.getElementById("modal-area"));
 /** @typedef {object} ContentList
  * @property {Number} no
  * @property {String} title
@@ -60,7 +61,7 @@ function render(filter = null) {
     data.forEach((element) => {
         const no = /** @type {number} */ (element["no"]);
         const title = /** @type {string} */ (element["title"]);
-        const link = /** @type {string} */ (element["link"]);
+        const link = /** @type {string} */ (element["link"].trim());
 
         const content = document.createElement("div");
         content.className = "content";
@@ -78,28 +79,53 @@ function render(filter = null) {
 
         content.append(no_div, title_div);
 
+        if (link && link !== "") {
+            const link_div = document.createElement("div");
+            link_div.className = "content-link";
+            link_div.textContent = link;
+            content.appendChild(link_div);
+        }
+
+        const btn_bar = document.createElement("div");
+        btn_bar.className = "btn-bar";
+        btn_bar.innerHTML = `
+            <button class="edit btn">수정</button>
+            <button class="delete btn">삭제</button>
+        `;
+        content.appendChild(btn_bar);
+
         fragment.appendChild(content);
     });
 
     display.appendChild(fragment);
-    // const insert_html = data.map((value) => {
-    //     const { no, title, link } = value;
-    //     const link_html = link.trim() !== "" ? `<div class="content-link">${link}</div>` : "";
-
-    //     return `<div class="content" data-no="${no}" data-title="${no}">
-    //         <div class="content-no">${no}</div>
-    //         <div class="content-title">${title}</div>
-    //         ${link_html}
-    //         <div class="btn-bar">
-    //             <button class="edit-btn">수정</button>
-    //             <button class="delete-btn">삭제</button>
-    //         </div>
-    //     </div>`;
-    // }).join("\n");
-
-    // display.insertAdjacentHTML("beforeend", insert_html);
 }
 
 window.addEventListener("DOMContentLoaded", () => {
     render();
+});
+window.addEventListener("keydown", (ev) => {
+    if (ev.key === "Escape") {
+        ev.preventDefault();
+        if (modal_area.matches(".activated")) {
+            modal_area.classList.remove("activated");
+        }
+    }
+});
+display.addEventListener("click", (ev) => {
+    const target = /** @type {HTMLElement} */ (ev.target);
+
+    if (!target.matches(".btn")) return;
+
+    const parent = /** @type {HTMLElement} */ (target.closest(".content"));
+    if (!parent) return;
+
+    const no = parent.dataset.no;
+
+    if (target.matches(".edit")) {
+        console.log(`수정 클릭, ${no}번 곡`);
+        modal_area.classList.add("activated");
+        
+    } else if (target.matches(".delete")) {
+        console.log(`삭제 클릭, ${no}번 곡`);
+    }
 });
