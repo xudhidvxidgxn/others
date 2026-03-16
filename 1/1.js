@@ -5,13 +5,15 @@ const input_num = /** @type {HTMLInputElement} */ (
 const display = /** @type {HTMLDivElement} */ (
     document.querySelector("#display")
 );
-const modal_area = /** @type {HTMLDivElement} */ (document.getElementById("modal-area"));
+const modal_area = /** @type {HTMLDivElement} */ (
+    document.getElementById("modal-area")
+);
 /** @typedef {object} ContentList
  * @property {Number} no
  * @property {String} title
  * @property {String} link
  */
-/** @type {ContentList} */
+/** @type {ContentList[]} */
 let content_data = getLocalStorage("karaoke_list", [
     { no: 75596, title: "숲의 아이", link: "d" },
     { no: 51581, title: "Become", link: "" },
@@ -124,8 +126,18 @@ display.addEventListener("click", (ev) => {
     if (target.matches(".edit")) {
         console.log(`수정 클릭, ${no}번 곡`);
         modal_area.classList.add("activated");
-        
     } else if (target.matches(".delete")) {
         console.log(`삭제 클릭, ${no}번 곡`);
+    }
+});
+modal_area.addEventListener("click", (ev) => {
+    const target = /** @type {HTMLElement} */ (ev.target);
+    const current_target = /** @type {HTMLElement} */ (ev.currentTarget);
+
+    if (target === current_target) {
+        modal_area.classList.remove("activated");
+    } else if (target.matches('button[type="submit"]')) {
+        ev.preventDefault();
+        modal_area.classList.remove("activated");
     }
 });
