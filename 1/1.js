@@ -111,14 +111,11 @@ function render(filter = "") {
     display.innerHTML = "";
 
     const data = /** @type {ContentList[]} */ (
-        filter || filter.trim() !== ""
-            ? content_data.filter(
-                  (value) =>
-                      `${value["no"]}`.startsWith(`${filter}`) ||
-                      value["title"].includes(`${filter}`),
-              )
+        filter || filter.trim() !== "" ?
+            content_data.filter((value) => `${value["no"]}`.startsWith(`${filter}`) || value["title"].includes(`${filter}`))
             : content_data
     );
+
     data.forEach((element, index) => {
         const no = /** @type {number} */ (element["no"]);
         const title = /** @type {string} */ (element["title"]);
