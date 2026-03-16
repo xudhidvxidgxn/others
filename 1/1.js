@@ -8,6 +8,7 @@ const display = /** @type {HTMLDivElement} */ (
 const modal_area = /** @type {HTMLDivElement} */ (
     document.getElementById("modal-area")
 );
+const form = /** @type {HTMLDivElement} */ (document.querySelector(".form"));
 /** @typedef {object} ContentList
  * @property {Number} no
  * @property {String} title
@@ -19,6 +20,42 @@ let content_data = getLocalStorage("karaoke_list", [
     { no: 51581, title: "Become", link: "" },
 ]);
 
+/** 저장하는 함수 */
+function save() {
+    const no_input = /** @type {HTMLInputElement} */ (
+        document.querySelector("#no")
+    );
+    const title_input = /** @type {HTMLInputElement} */ (
+        document.querySelector("#title")
+    );
+    const link_input = /** @type {HTMLInputElement} */ (
+        document.querySelector("#link")
+    );
+
+    const new_data = {
+        no: Number(no_input.value),
+        title: title_input.value,
+        link: link_input.value || "",
+    };
+    console.log(new_data);
+
+    if (Number.isNaN(new_data["no"]) || new_data["title"].trim() === "") {
+        alert(`번호가 잘못되었거나 제목이 잘못되었습니다! 
+            번호 : ${new_data["no"]}
+            제목 : ${new_data["title"]}
+            링크 : ${new_data["link"]}`);
+        return;
+    }
+
+    let full_data = [
+        new_data,
+        ...content_data.filter(
+            (value) => `${new_data["no"]}` !== `${value["no"]}`,
+        ),
+    ];
+    content_data = setLocalStorage("karaoke_list", full_data);
+    render(input_num.value);
+}
 /**
  * 저장소 이름 받아서 가져옵니다
  * @param {string} storage_name - 저장소의 이름 (문자열이어야 해!)
@@ -44,15 +81,28 @@ function getLocalStorage(storage_name, default_value = []) {
         return default_value;
     }
 }
-/** 화면 로딩 함수
- * @param {string|number|null} [filter] - 필터입니다.
+/**
+ * 데이터를 JSON 문자열로 변환하여 localStorage에 저장합니다.
+ * @param {string} storage_name - 로컬스토리지 키 이름 (없으면 recent_searches)
+ * @param {any} data - 저장할 데이터 (객체나 배열 등)
  */
-function render(filter = null) {
+function setLocalStorage(storage_name, data = null) {
+    if (data === null || data === undefined) {
+        console.log("data가 비었습니다.");
+        return;
+    }
+    localStorage.setItem(storage_name, JSON.stringify(data));
+    return getLocalStorage(storage_name);
+}
+/** 화면 로딩 함수
+ * @param {string} [filter] - 필터입니다.
+ */
+function render(filter = "") {
     const fragment = document.createDocumentFragment();
     display.innerHTML = "";
 
     const data = /** @type {ContentList[]} */ (
-        filter
+        filter || filter.trim() !== ""
             ? content_data.filter(
                   (value) =>
                       `${value["no"]}`.includes(`${filter}`) ||
@@ -112,6 +162,10 @@ window.addEventListener("keydown", (ev) => {
             modal_area.classList.remove("activated");
         }
     }
+    if (ev.key === "Enter" && modal_area.matches(".activated")) {
+        // 저장하는 함수
+        console.log("저장됨");
+    }
 });
 display.addEventListener("click", (ev) => {
     const target = /** @type {HTMLElement} */ (ev.target);
@@ -125,9 +179,23 @@ display.addEventListener("click", (ev) => {
 
     if (target.matches(".edit")) {
         console.log(`수정 클릭, ${no}번 곡`);
+        const id_input = /** @type {HTMLInputElement} */ (
+            form.querySelector("#no")
+        );
+        const title_input = /** @type {HTMLInputElement} */ (
+            form.querySelector("#title")
+        );
+        const link_input = /** @type {HTMLInputElement} */ (
+            form.querySelector("#link")
+        );
+
+        id_input.value = parent.dataset.no || "";
+        title_input.value = parent.dataset.title || "";
+        link_input.value = parent.dataset.link || "";
         modal_area.classList.add("activated");
     } else if (target.matches(".delete")) {
         console.log(`삭제 클릭, ${no}번 곡`);
+        // const edited_data = content_data.filter(value);
     }
 });
 modal_area.addEventListener("click", (ev) => {
@@ -136,8 +204,9 @@ modal_area.addEventListener("click", (ev) => {
 
     if (target === current_target) {
         modal_area.classList.remove("activated");
-    } else if (target.matches('button[type="submit"]')) {
+    } else if (target.matches(".btn.edit")) {
         ev.preventDefault();
+        save();
         modal_area.classList.remove("activated");
     }
 });
