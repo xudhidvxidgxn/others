@@ -9,6 +9,13 @@ const modal_area = /** @type {HTMLDivElement} */ (
     document.getElementById("modal-area")
 );
 const form = /** @type {HTMLDivElement} */ (document.querySelector(".form"));
+const controller = /** @type {HTMLDivElement} */ (
+    document.querySelector("#controller")
+);
+const go_btn = /** @type {HTMLButtonElement} */ (document.querySelector("#go"));
+
+let render_timer = null;
+
 /** @typedef {object} ContentList
  * @property {Number} no
  * @property {String} title
@@ -22,6 +29,7 @@ let content_data = getLocalStorage("karaoke_list", [
 
 /** 저장하는 함수 */
 function save() {
+    const idx = modal_area.dataset.idx;
     const no_input = /** @type {HTMLInputElement} */ (
         document.querySelector("#no")
     );
@@ -50,7 +58,8 @@ function save() {
     let full_data = [
         new_data,
         ...content_data.filter(
-            (value) => `${new_data["no"]}` !== `${value["no"]}`,
+            (value, index) =>
+                `${new_data["no"]}` !== `${value["no"]}` && idx !== `${index}`,
         ),
     ];
     content_data = setLocalStorage("karaoke_list", full_data);
@@ -105,18 +114,19 @@ function render(filter = "") {
         filter || filter.trim() !== ""
             ? content_data.filter(
                   (value) =>
-                      `${value["no"]}`.includes(`${filter}`) ||
+                      `${value["no"]}`.startsWith(`${filter}`) ||
                       value["title"].includes(`${filter}`),
               )
             : content_data
     );
-    data.forEach((element) => {
+    data.forEach((element, index) => {
         const no = /** @type {number} */ (element["no"]);
         const title = /** @type {string} */ (element["title"]);
         const link = /** @type {string} */ (element["link"].trim());
 
         const content = document.createElement("div");
         content.className = "content";
+        content.dataset.idx = `${index}`;
         content.dataset.no = `${no}`;
         content.dataset.title = title;
         if (link !== "") content.dataset.link = link;
@@ -193,9 +203,16 @@ display.addEventListener("click", (ev) => {
         title_input.value = parent.dataset.title || "";
         link_input.value = parent.dataset.link || "";
         modal_area.classList.add("activated");
+        modal_area.dataset.idx = parent.dataset.idx;
     } else if (target.matches(".delete")) {
         console.log(`삭제 클릭, ${no}번 곡`);
-        // const edited_data = content_data.filter(value);
+        // if(confirm())
+        const edited_data = content_data.filter(
+            (value) => `${value["no"]}` !== `${no}`,
+        );
+        content_data = setLocalStorage("karaoke_list", edited_data);
+        render(input_num.value);
+        alert(`${no}번 삭제되었습ㄴ다.`);
     }
 });
 modal_area.addEventListener("click", (ev) => {
@@ -204,9 +221,21 @@ modal_area.addEventListener("click", (ev) => {
 
     if (target === current_target) {
         modal_area.classList.remove("activated");
-    } else if (target.matches(".btn.edit")) {
+    } else if (target.matches('button[type="submit"]')) {
         ev.preventDefault();
         save();
         modal_area.classList.remove("activated");
     }
+});
+input_num.addEventListener("input", (ev) => {
+    const current_target = /** @type {HTMLInputElement} */ (ev.currentTarget);
+    const val = current_target.value;
+    // console.log(Number(val), /^[0-9]+$/.test(val));
+    if (/^[0-9]+$/.test(val)) {
+        if (val.length > 5) {
+            const clipped = val.slice(0, 5);
+            current_target.value = val !== clipped ? clipped : val;
+        }
+    }
+    render(val);
 });
