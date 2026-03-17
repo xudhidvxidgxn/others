@@ -1,43 +1,480 @@
 <!doctype html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>karaoke</title>
-        <link rel="stylesheet" href="1/1.css" />
-        <style></style>
-    </head>
-    <body>
-        <div id="modal-area">
-            <div id="modal-content">
-                <div class="form">
-                    <div class="form-row">
-                        <label for="no">번호</label>
-                        <input type="text" class="form-input" id="no" inputmode="numeric">
-                    </div>
-                    <div class="form-row">
-                        <label for="title">제목</label>
-                        <input type="text" class="form-input" id="title">
-                    </div>
-                    <div class="form-row">
-                        <label for="link">링크</label>
-                        <input type="text" class="form-input" id="link">
-                    </div>
-                    <div class="form-row">
-                        <button type="submit">저장하기</button>
-                    </div>
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>karaoke</title>
+    <!-- <link rel="stylesheet" href="1/1.css" /> -->
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            padding: 20px;
+        }
+
+        #display {
+            display: grid;
+            grid-template-columns: repeat(1, 1fr);
+            gap: 10px;
+            width: 95%;
+            max-width: 1000px;
+            margin-top: 20px;
+        }
+
+        #controller {
+            display: flex;
+            width: 100%;
+            max-width: 700px;
+            align-items: stretch;
+        }
+
+        #input-num {
+            padding: 8px 12px;
+            flex-grow: 1;
+            margin-right: 10px;
+            flex-shrink: 0.8;
+            min-width: 0;
+        }
+
+        #go {
+            padding: 0 14px;
+            flex-shrink: 0;
+        }
+
+        #modal-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgb(0, 0, 0, 0.5);
+            user-select: none;
+            pointer-events: none;
+            z-index: 1000;
+
+            visibility: hidden;
+            opacity: 0;
+            transition: visibility 0.3s,
+                opacity 0.3s,
+                pointer-events 0.3s;
+        }
+
+        #modal-content {
+            display: none;
+            flex-direction: column;
+            padding: 30px;
+            width: 90%;
+            max-width: 800px;
+            user-select: none;
+            background-color: #fff;
+        }
+
+        #modal-area.activated {
+            pointer-events: auto;
+            visibility: visible;
+            opacity: 1;
+        }
+
+        #modal-area.activated #modal-content {
+            display: flex;
+            animation: modalPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        @keyframes modalPop {
+            from {
+                transform: scale(0.6);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 10px;
+            border-radius: 15px;
+            background-color: #dfdfdf;
+        }
+
+        .content>.content-no {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .content>.content-title {
+            font-size: 16px;
+        }
+
+        .content>.content-link {
+            font-size: 14px;
+            color: rgb(0, 0, 0, 0.5);
+        }
+
+        .btn-bar {
+            display: flex;
+            width: 100%;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .btn-bar>button {
+            flex-grow: 1;
+        }
+
+        .form {
+            display: grid;
+            grid-template-columns: repeat(1, 1fr);
+            width: 100%;
+            gap: 20px;
+        }
+
+        .form-row {
+            display: flex;
+            width: 100%;
+            align-items: center;
+        }
+
+        .form-row label {
+            flex-shrink: 0;
+            width: 20%;
+            max-width: 80px;
+            padding: 5px 8px;
+        }
+
+        .form-row input,
+        .form-row button {
+            flex-grow: 1;
+            padding: 6px 12px;
+            min-width: 0;
+            flex-shrink: 1;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="modal-area">
+        <div id="modal-content">
+            <div class="form">
+                <div class="form-row">
+                    <label for="no">번호</label>
+                    <input type="text" class="form-input" id="no" inputmode="numeric">
+                </div>
+                <div class="form-row">
+                    <label for="title">제목</label>
+                    <input type="text" class="form-input" id="title">
+                </div>
+                <div class="form-row">
+                    <label for="link">링크</label>
+                    <input type="text" class="form-input" id="link">
+                </div>
+                <div class="form-row">
+                    <button type="submit">저장하기</button>
                 </div>
             </div>
         </div>
-        <div id="controller">
-            <input
-                type="text"
-                id="input-num"
-                placeholder="번호 또는 제목 입력"
-            />
-            <button id="go">go?</button>
-        </div>
-        <div id="display"></div>
-        <script src="1/1.js"></script>
-    </body>
+    </div>
+    <div id="controller">
+        <input type="text" id="input-num" placeholder="번호 또는 제목 입력" autofocus />
+        <button id="go">go?</button>
+    </div>
+    <div id="display"></div>
+    <script>
+        // @ts-check
+        const input_num = /** @type {HTMLInputElement} */ (
+            document.querySelector("#input-num")
+        );
+        const display = /** @type {HTMLDivElement} */ (
+            document.querySelector("#display")
+        );
+        const modal_area = /** @type {HTMLDivElement} */ (
+            document.getElementById("modal-area")
+        );
+        const form = /** @type {HTMLDivElement} */ (document.querySelector(".form"));
+        const controller = /** @type {HTMLDivElement} */ (
+            document.querySelector("#controller")
+        );
+        const go_btn = /** @type {HTMLButtonElement} */ (document.querySelector("#go"));
+
+        let render_timer = null;
+
+        /** @typedef {object} ContentList
+         * @property {Number} no
+         * @property {String} title
+         * @property {String} link
+         */
+        /** @type {ContentList[]} */
+        let content_data = getLocalStorage("karaoke_list", [
+            { no: 75596, title: "숲의 아이", link: "d" },
+            { no: 51581, title: "Become", link: "" },
+        ]);
+        /** 저장하는 함수
+         * @param {ContentList} term - 맨 위로 올릴 데이터
+         * @param {string|null} idx 
+         */
+        function save(term, idx = null) {
+            const is_duplicate = content_data.some((value, index) => {
+                String(index) !== String(idx) && value.no !== term.no
+            });
+            if (is_duplicate) {
+                alert(`같은 번호(${term.no}) 가 이미 목록에 있습니다!`);
+                return;
+            }
+            const filtered = content_data.filter((_, index) => String(index) !== String(idx));
+            const full_data = [term, ...filtered];
+
+            content_data = setLocalStorage("karaoke_list", full_data);
+            input_num.value = "";
+            render(input_num.value);
+        }
+        /** 수정하는 함수 */
+        function editData() {
+            const idx = modal_area.dataset.idx || null;
+            const no_input = /** @type {HTMLInputElement} */ (
+                document.querySelector("#no")
+            );
+            const title_input = /** @type {HTMLInputElement} */ (
+                document.querySelector("#title")
+            );
+            const link_input = /** @type {HTMLInputElement} */ (
+                document.querySelector("#link")
+            );
+
+            if (isNaN(Number(no_input.value)) || title_input.value.trim() === "") {
+                alert(`번호가 잘못되었거나 제목이 잘못되었습니다! 
+            번호 : ${no_input.value}
+            제목 : ${title_input.value}
+            링크 : ${link_input.value}`);
+                return;
+            }
+
+            const new_data = {
+                no: Number(no_input.value),
+                title: title_input.value,
+                link: link_input.value || "",
+            };
+
+            save(new_data, idx);
+        }
+        function insertModalOpen() {
+            const val = input_num.value.trim();
+            console.log(val);
+            if (val === "" || val.length > 5 || isNaN(Number(val))) {
+                alert(`번호가 유효하지 않습니다.`);
+                return;
+            }
+
+            const no_input = /** @type {HTMLInputElement} */ (form.querySelector("#no"));
+            const submit_btn = /** @type {HTMLButtonElement} */ (form.querySelector('button[type="submit"]'));
+            no_input.value = val;
+            submit_btn.innerText = '추가하기';
+            modal_area.dataset.idx = "";
+            modal_area.className = 'activated insert';
+        }
+        /**
+         * 저장소 이름 받아서 가져옵니다
+         * @param {string} storage_name - 저장소의 이름 (문자열이어야 해!)
+         * @param {any} default_value - 데이터가 없을 경우 저장할 초기값 (기본값: [])
+         * @returns {any} 파싱된 데이터 객체 또는 배열
+         */
+        function getLocalStorage(storage_name, default_value = []) {
+            const data = localStorage.getItem(storage_name);
+
+            // 데이터가 없으면 초기값을 저장하고 반환합니다.
+            if (data === null) {
+                console.log(
+                    `${storage_name} 라는 localStorage가 없어 ${default_value} 로 대체되었습니다.`,
+                );
+                return default_value;
+            }
+
+            // 데이터가 있으면 JSON으로 변환해서 반환합니다.
+            try {
+                return JSON.parse(data);
+            } catch (e) {
+                console.error("localStorage 파싱 에러:", e);
+                return default_value;
+            }
+        }
+        /**
+         * 데이터를 JSON 문자열로 변환하여 localStorage에 저장합니다.
+         * @param {string} storage_name - 로컬스토리지 키 이름 (없으면 recent_searches)
+         * @param {any} data - 저장할 데이터 (객체나 배열 등)
+         */
+        function setLocalStorage(storage_name, data = null) {
+            if (data === null || data === undefined) {
+                console.log("data가 비었습니다.");
+                return;
+            }
+            localStorage.setItem(storage_name, JSON.stringify(data));
+            return getLocalStorage(storage_name);
+        }
+        /** 화면 로딩 함수
+         * @param {string} [filter] - 필터입니다.
+         */
+        function render(filter = "") {
+            const fragment = document.createDocumentFragment();
+            display.innerHTML = "";
+
+            // const data = /** @type {ContentList[]} */ (
+            //     filter || filter.trim() !== "" ?
+            //         content_data.filter((value) => `${value["no"]}`.startsWith(`${filter}`) || value["title"].includes(`${filter}`))
+            //         : content_data
+            // );
+            const filtered_data = content_data
+                .map((val, idx) => ({ ...val, origin_idx: idx }))
+                .filter((val) =>
+                    `${val.no}`.startsWith(filter) || val.title.startsWith(filter)
+                );
+
+            filtered_data.forEach((element) => {
+                const { no, title, link, origin_idx } = element;
+
+                const content = document.createElement("div");
+                content.className = "content";
+                content.dataset.idx = String(origin_idx);
+                content.dataset.no = String(no);
+                content.dataset.title = title;
+                if (link !== "") content.dataset.link = link;
+
+                const no_div = document.createElement("div");
+                no_div.className = "content-no";
+                no_div.textContent = `${no}`;
+
+                const title_div = document.createElement("div");
+                title_div.className = "content-title";
+                title_div.textContent = title;
+
+                content.append(no_div, title_div);
+
+                if (link && link !== "") {
+                    const link_div = document.createElement("div");
+                    link_div.className = "content-link";
+                    link_div.textContent = link;
+                    content.appendChild(link_div);
+                }
+
+                const btn_bar = document.createElement("div");
+                btn_bar.className = "btn-bar";
+                btn_bar.innerHTML = `
+            <button class="edit btn">수정</button>
+            <button class="delete btn">삭제</button>
+        `;
+                content.appendChild(btn_bar);
+
+                fragment.appendChild(content);
+            });
+
+            display.appendChild(fragment);
+        }
+
+        window.addEventListener("DOMContentLoaded", () => {
+            render();
+        });
+        window.addEventListener("keydown", (ev) => {
+            if (ev.key === "Escape") {
+                ev.preventDefault();
+                if (modal_area.matches(".activated")) {
+                    modal_area.classList.remove("activated");
+                }
+            }
+            if (ev.key === "Enter") {
+                if (modal_area.matches(".activated")) {
+                    // 저장하는 함수
+                    console.log("저장됨");
+                } else {
+                    insertModalOpen();
+                }
+            }
+        });
+        display.addEventListener("click", (ev) => {
+            const target = /** @type {HTMLElement} */ (ev.target);
+
+            if (!target.matches(".btn")) return;
+
+            const parent = /** @type {HTMLElement} */ (target.closest(".content"));
+            if (!parent) return;
+
+            const no = parent.dataset.no;
+
+            if (target.matches(".edit")) {
+                console.log(`수정 클릭, ${no}번 곡`);
+                const id_input = /** @type {HTMLInputElement} */ (
+                    form.querySelector("#no")
+                );
+                const title_input = /** @type {HTMLInputElement} */ (
+                    form.querySelector("#title")
+                );
+                const link_input = /** @type {HTMLInputElement} */ (
+                    form.querySelector("#link")
+                );
+
+                id_input.value = parent.dataset.no || "";
+                title_input.value = parent.dataset.title || "";
+                link_input.value = parent.dataset.link || "";
+                modal_area.className = 'activated update';
+                modal_area.dataset.idx = parent.dataset.idx;
+            } else if (target.matches(".delete")) {
+                console.log(`삭제 클릭, ${no}번 곡`);
+                if (confirm(`${no}번을 삭제합니까?`)) {
+                    // if(confirm())
+                    const edited_data = content_data.filter(
+                        (value) => `${value["no"]}` !== `${no}`,
+                    );
+                    content_data = setLocalStorage("karaoke_list", edited_data);
+                    render(input_num.value);
+                    alert(`${no}번 삭제되었습ㄴ다.`);
+                }
+            }
+        });
+        modal_area.addEventListener("click", (ev) => {
+            const target = /** @type {HTMLElement} */ (ev.target);
+            const current_target = /** @type {HTMLElement} */ (ev.currentTarget);
+
+            if (target === current_target) {
+                // modal_area.classList.remove("activated");
+                modal_area.className = '';
+            } else if (target.matches('button[type="submit"]')) {
+                ev.preventDefault();
+                editData();
+                modal_area.className = '';
+            }
+        });
+        input_num.addEventListener("input", (ev) => {
+            const current_target = /** @type {HTMLInputElement} */ (ev.currentTarget);
+            const val = current_target.value;
+            // console.log(Number(val), /^[0-9]+$/.test(val));
+            if (/^[0-9]+$/.test(val)) {
+                if (val.length > 5) {
+                    const clipped = val.slice(0, 5);
+                    current_target.value = val !== clipped ? clipped : val;
+                }
+            }
+            render(val);
+        });
+        go_btn.addEventListener("click", insertModalOpen);
+    </script>
+    <!-- <script src="1/1.js"></script> -->
+</body>
+
 </html>
