@@ -281,6 +281,9 @@
             console.log(val);
             if (val === "" || val.length > 5 || isNaN(Number(val))) {
                 alert(`번호가 유효하지 않습니다.`);
+                input_num.value = "";
+                input_num.focus();
+                render(input_num.value);
                 return;
             }
 
