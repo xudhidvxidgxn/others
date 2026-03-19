@@ -247,9 +247,8 @@
             input_num.value = "";
             render(input_num.value);
         }
-        /** 수정하는 함수 */
-        function editData() {
-            const idx = modal_area.dataset.idx || null;
+        /** 수정 혹은 추가를 위한 데이터를 폼에서 가져오는 함수 */
+        function getFormData() {
             const no_input = /** @type {HTMLInputElement} */ (
                 document.querySelector("#no")
             );
@@ -260,19 +259,24 @@
                 document.querySelector("#link")
             );
 
-            if (isNaN(Number(no_input.value)) || title_input.value.trim() === "") {
+            return {
+                no: Number(no_input.value),
+                title: title_input.value.trim(),
+                link: link_input.value.trim() || ""
+            }
+        }
+        /** 수정하는 함수 */
+        function editData() {
+            const idx = modal_area.dataset.idx || null;
+
+            const new_data = getFormData();
+            if (isNaN(new_data.no) || new_data.title === "") {
                 alert(`번호가 잘못되었거나 제목이 잘못되었습니다! 
-            번호 : ${no_input.value}
-            제목 : ${title_input.value}
-            링크 : ${link_input.value}`);
+            번호 : ${new_data.no}
+            제목 : ${new_data.title}
+            링크 : ${new_data.link}`);
                 return;
             }
-
-            const new_data = {
-                no: Number(no_input.value),
-                title: title_input.value,
-                link: link_input.value || "",
-            };
 
             save(new_data, idx);
         }
@@ -290,13 +294,17 @@
             // if ()
 
             const no_input = /** @type {HTMLInputElement} */ (form.querySelector("#no"));
-            const submit_btn = /** @type {HTMLButtonElement} */ (form.querySelector('button[type="submit"]'));
             const title_input = /** @type {HTMLInputElement} */ (form.querySelector("#title"));
+            const submit_btn = /** @type {HTMLButtonElement} */ (form.querySelector('button[type="submit"]'));
             no_input.value = val;
             title_input.value = "";
             submit_btn.innerText = '추가하기';
             modal_area.dataset.idx = "";
             modal_area.className = 'activated insert';
+
+            setTimeout(() => {
+                title_input.focus();
+            }, 10);
         }
         /**
          * 저장소 이름 받아서 가져옵니다
@@ -408,7 +416,11 @@
             if (ev.key === "Enter") {
                 if (modal_area.matches(".activated")) {
                     // 저장하는 함수
+                    ev.preventDefault();
+                    editData();
+                    modal_area.className = '';
                     console.log("저장됨");
+                    input_num.focus();
                 } else {
                     insertModalOpen();
                 }
@@ -468,16 +480,16 @@
             }
         });
         input_num.addEventListener("input", (ev) => {
-            const current_target = /** @type {HTMLInputElement} */ (ev.currentTarget);
-            const val = current_target.value;
+            const ct = /** @type {HTMLInputElement} */ (ev.currentTarget);
+            const val = ct.value;
             // console.log(Number(val), /^[0-9]+$/.test(val));
             if (/^[0-9]+$/.test(val)) {
                 if (val.length > 5) {
                     const clipped = val.slice(0, 5);
-                    current_target.value = val !== clipped ? clipped : val;
+                    ct.value = ct.value !== clipped ? clipped : ct.value;
                 }
             }
-            render(val);
+            render(ct.value);
         });
         form.querySelector("#no")?.addEventListener("input", (ev) => {
             const target = /** @type {HTMLInputElement} */ (ev.currentTarget);
