@@ -178,7 +178,7 @@
             <div class="form">
                 <div class="form-row">
                     <label for="no">번호</label>
-                    <input type="text" class="form-input" id="no" inputmode="numeric">
+                    <input type="text" class="form-input" id="no" inputmode="numeric" maxlength="5">
                 </div>
                 <div class="form-row">
                     <label for="title">제목</label>
@@ -233,9 +233,9 @@
          * @param {string|null} idx 
          */
         function save(term, idx = null) {
-            const is_duplicate = content_data.some((value, index) => {
-                String(index) !== String(idx) && value.no !== term.no
-            });
+            const is_duplicate = content_data.some((value, index) =>
+                String(index) !== String(idx) && value.no == term.no
+            );
             if (is_duplicate) {
                 alert(`같은 번호(${term.no}) 가 이미 목록에 있습니다!`);
                 return;
@@ -279,6 +279,7 @@
         function insertModalOpen() {
             const val = input_num.value.trim();
             console.log(val);
+            const history = getLocalStorage("karaoke_list", content_data);
             if (val === "" || val.length > 5 || isNaN(Number(val))) {
                 alert(`번호가 유효하지 않습니다.`);
                 input_num.value = "";
@@ -286,6 +287,7 @@
                 render(input_num.value);
                 return;
             }
+            // if ()
 
             const no_input = /** @type {HTMLInputElement} */ (form.querySelector("#no"));
             const submit_btn = /** @type {HTMLButtonElement} */ (form.querySelector('button[type="submit"]'));
@@ -476,6 +478,17 @@
                 }
             }
             render(val);
+        });
+        form.querySelector("#no")?.addEventListener("input", (ev) => {
+            const target = /** @type {HTMLInputElement} */ (ev.currentTarget);
+
+            // 정규식에 맞지 않는 문자는 광속으로 삭제
+            const cleanValue = target.value.replace(/[^0-9]/g, "");
+
+            // 값이 바뀌었을 때만 다시 할당 (무한 루프 방지 및 커서 튐 방지)
+            if (target.value !== cleanValue) {
+                target.value = cleanValue;
+            }
         });
         go_btn.addEventListener("click", insertModalOpen);
     </script>
