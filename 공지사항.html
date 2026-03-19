@@ -1,318 +1,333 @@
 <!doctype html>
 <html lang="ko">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>공지사항</title>
-        <style>
-            * {
-                margin: 0;
-                padding: 0;
-                box-sizing: border-box;
-            }
-            body {
-                display: flex;
-                padding: 0 20px;
-                padding-bottom: 10px;
-                align-items: stretch;
-                min-height: 100vh; /* 화면 전체 높이를 최소로 잡음 */
-            }
-            .content-list {
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: center;
-                gap: 10px;
-                width: 100%;
-            }
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>공지사항</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            padding: 0 20px;
+            padding-bottom: 10px;
+            align-items: stretch;
+            min-height: 100vh;
+            /* 화면 전체 높이를 최소로 잡음 */
+        }
+
+        .content-list {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+        }
+
+        [class*="menu"] {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 50%;
+            flex: 1;
+            padding: 20px;
+        }
+
+        .left-menu {
+            gap: 20px;
+            border-right: 1px solid #e2e2e2;
+        }
+
+        .right-menu {
+            flex-grow: 1;
+        }
+
+        input,
+        .content {
+            width: 80%;
+            max-width: 300px;
+            padding: 5px 8px;
+        }
+
+        .right-menu pre {
+            white-space: pre-wrap;
+            word-break: break-all;
+            max-width: 100%;
+            padding: 10px 0;
+        }
+
+        @media screen and (max-width: 1000px) {
             [class*="menu"] {
-                display: flex;
+                width: 100%;
+                height: auto;
+            }
+
+            body {
                 flex-direction: column;
-                align-items: center;
-                width: 50%;
-                flex: 1;
-                padding: 20px;
             }
+
             .left-menu {
-                gap: 20px;
-                border-right: 1px solid #e2e2e2;
+                border-right: none;
+                border-bottom: 1px solid #e2e2e2;
+                padding-bottom: 20px;
             }
-            .right-menu {
-                flex-grow: 1;
-            }
-            input, .content {
-                width: 80%;
-                max-width: 300px;
-                padding: 5px 8px;
-            }
-            .right-menu pre {
-                white-space: pre-wrap;
-                word-break: break-all;
-                max-width: 100%;
-                padding: 10px 0;
-            }
-            @media screen and (max-width: 1000px) {
-                [class*="menu"] {
-                    width: 100%;
-                    height: auto;
-                }
-                body {
-                    flex-direction: column;
-                }
-                .left-menu {
-                    border-right: none;
-                    border-bottom: 1px solid #e2e2e2;
-                    padding-bottom: 20px;
-                }
-            }
-        </style>
-    </head>
-    <body>
-        <div class="left-menu">
-            <input type="text" class="input" autofocus />
-            <div class="content-list"></div>
-            <template id="input-temp">
-                <input type="text" class="content" />
-            </template>
-        </div>
-        <div class="right-menu">
-            <button id="copy-btn">복사하기</button>
-            <pre id="display"></pre>
-        </div>
-        <script>
-            // @ts-check
+        }
+    </style>
+</head>
 
-            /**
-             * [STATE] 모든 데이터의 근원
-             * * 0번 인덱스는 제목, 그 이후는 리스트 아이템입니다. */
-            let contentData = [""];
+<body>
+    <div class="left-menu">
+        <input type="text" class="input" autofocus />
+        <div class="content-list"></div>
+        <template id="input-temp">
+            <input type="text" class="content" />
+        </template>
+    </div>
+    <div class="right-menu">
+        <button id="copy-btn">복사하기</button>
+        <pre id="display"></pre>
+    </div>
+    <script>
+        // @ts-check
 
-            const input_main = /** @type {HTMLInputElement} */ (
-                document.querySelector(".input")
-            );
-            const content_list = document.querySelector(".content-list");
-            const display = /** @type {HTMLPreElement} */ (
-                document.querySelector("#display")
-            );
-            const input_temp = /** @type {HTMLTemplateElement} */ (
-                document.querySelector("#input-temp")
-            );
+        /**
+         * [STATE] 모든 데이터의 근원
+         * * 0번 인덱스는 제목, 그 이후는 리스트 아이템입니다. */
+        let contentData = [""];
 
-            /** * [RENDER] 데이터를 바탕으로 오른쪽 결과창을 그립니다. */
-            function render() {
-                // 0번(제목)은 글자 사이 공백 추가
-                const styledTitle = contentData[0].split("").join(" ");
+        const input_main = /** @type {HTMLInputElement} */ (
+            document.querySelector(".input")
+        );
+        const content_list = document.querySelector(".content-list");
+        const display = /** @type {HTMLPreElement} */ (
+            document.querySelector("#display")
+        );
+        const input_temp = /** @type {HTMLTemplateElement} */ (
+            document.querySelector("#input-temp")
+        );
 
-                let resultHTML = `☆ ${styledTitle} ☆\n`;
-                if (contentData.length > 1) {
-                    const listItems = contentData
-                        .slice(1)
-                        .map((text, idx) => `    ${idx + 1}. ${text}`)
-                        .join("\n");
-                    resultHTML += listItems;
-                }
-                display.textContent = resultHTML;
-            }
+        /** * [RENDER] 데이터를 바탕으로 오른쪽 결과창을 그립니다. */
+        function render() {
+            // 0번(제목)은 글자 사이 공백 추가
+            const styledTitle = contentData[0].split("").join(" ");
 
-            /** * [ACTION] 추가 버튼 클릭 시 데이터 늘리기 */
-            function addInput() {
-                contentData.push(""); // 데이터 추가 (새 인덱스는 length - 2가 됨)
-
-                // 템플릿 복사 로직 대신, 깔끔하게 renderLeft()를 호출해버리는 게 정신건강에 좋습니다.
-                renderLeft();
-                render();
-
-                // 마지막 인풋에 포커스
-                const new_input = /** @type {HTMLInputElement} */ (
-                    document.querySelector(".content:last-child")
-                );
-                new_input?.focus();
-            }
-            /** [RENDER-LEFT] 데이터 배열의 길이에 맞춰 인풋창 리스트를 쇄신함 */
-            function renderLeft() {
-                // 0번(제목) 제외한 데이터로 인풋 생성
-                const inputHTML = contentData
+            let resultHTML = `☆ ${styledTitle} ☆\n`;
+            if (contentData.length > 1) {
+                const listItems = contentData
                     .slice(1)
-                    .map((text, idx) => {
-                        // 여기에 data-index="${idx}"가 반드시 들어가야 합니다!
-                        return `<input type="text" class="content" value="${text}" data-index="${idx}">`;
-                    })
-                    .join("");
+                    .map((text, idx) => `    ${idx + 1}. ${text}`)
+                    .join("\n");
+                resultHTML += listItems;
+            }
+            display.textContent = resultHTML;
+        }
 
-                if (content_list) {
-                    content_list.innerHTML = inputHTML;
+        /** * [ACTION] 추가 버튼 클릭 시 데이터 늘리기 */
+        function addInput() {
+            contentData.push(""); // 데이터 추가 (새 인덱스는 length - 2가 됨)
+
+            // 템플릿 복사 로직 대신, 깔끔하게 renderLeft()를 호출해버리는 게 정신건강에 좋습니다.
+            renderLeft();
+            render();
+
+            // 마지막 인풋에 포커스
+            const new_input = /** @type {HTMLInputElement} */ (
+                document.querySelector(".content:last-child")
+            );
+            new_input?.focus();
+        }
+        /** [RENDER-LEFT] 데이터 배열의 길이에 맞춰 인풋창 리스트를 쇄신함 */
+        function renderLeft() {
+            // 0번(제목) 제외한 데이터로 인풋 생성
+            const inputHTML = contentData
+                .slice(1)
+                .map((text, idx) => {
+                    // 여기에 data-index="${idx}"가 반드시 들어가야 합니다!
+                    return `<input type="text" class="content" value="${text}" data-index="${idx}">`;
+                })
+                .join("");
+
+            if (content_list) {
+                content_list.innerHTML = inputHTML;
+            }
+        }
+
+        /** * [EVENT] 실시간 입력 감지 및 데이터 업데이트 */
+        window.addEventListener("input", (ev) => {
+            const target = /** @type {HTMLInputElement} */ (ev.target);
+            if (!target.matches("input")) return;
+
+            // 1. 공통 필터링 (공백 제거, 10자 제한)
+            let val;
+
+            // 2. 데이터 센터(배열) 동기화
+            if (target.matches(".input")) {
+                val = target.value.replace(/\s/g, "");
+                target.value = val; // 화면에 즉시 반영
+                contentData[0] = val;
+            } else if (target.matches(".content")) {
+                const idxStr = target.dataset.index;
+                val = target.value;
+                if (idxStr !== undefined) {
+                    const index = parseInt(idxStr);
+                    contentData[index + 1] = val; // 데이터 배열 업데이트
                 }
             }
 
-            /** * [EVENT] 실시간 입력 감지 및 데이터 업데이트 */
-            window.addEventListener("input", (ev) => {
+            // 3. 오른쪽 결과창만 실시간 업데이트 (포커스 유지를 위해 renderLeft는 부르지 않음!)
+            render();
+        });
+        window.addEventListener("keydown", (ev) => {
+            if ((ev.ctrlKey || ev.metaKey) && ev.key.toLowerCase() === "s") {
+                ev.preventDefault();
+                console.log("key!!!");
+                smartCopy(display.textContent);
+                return;
+            }
+            if (ev.key === "Enter" || ev.key === "ArrowDown") {
                 const target = /** @type {HTMLInputElement} */ (ev.target);
-                if (!target.matches("input")) return;
 
-                // 1. 공통 필터링 (공백 제거, 10자 제한)
-                let val;
+                // 1. 현재 타겟이 리스트 인풋(.content)인 경우만 체크
+                if (target.matches(".content")) {
+                    ev.preventDefault(); // 기본 줄바꿈 방지
 
-                // 2. 데이터 센터(배열) 동기화
-                if (target.matches(".input")) {
-                    val = target.value.replace(/\s/g, "");
-                    target.value = val; // 화면에 즉시 반영
-                    contentData[0] = val;
-                } else if (target.matches(".content")) {
-                    const idxStr = target.dataset.index;
-                    val = target.value;
-                    if (idxStr !== undefined) {
-                        const index = parseInt(idxStr);
-                        contentData[index + 1] = val; // 데이터 배열 업데이트
-                    }
-                }
+                    const allInputs = [
+                        ...document.querySelectorAll(".content"),
+                    ];
+                    const currentIndex = allInputs.indexOf(target);
+                    const isLast = currentIndex === allInputs.length - 1;
 
-                // 3. 오른쪽 결과창만 실시간 업데이트 (포커스 유지를 위해 renderLeft는 부르지 않음!)
-                render();
-            });
-            window.addEventListener("keydown", (ev) => {
-                if ((ev.ctrlKey || ev.metaKey) && ev.key.toLowerCase() === "s") {
-                    ev.preventDefault();
-                    console.log("key!!!");
-                    smartCopy(display.textContent);
-                    return;
-                }
-                if (ev.key === "Enter" || ev.key === "ArrowDown") {
-                    const target = /** @type {HTMLInputElement} */ (ev.target);
-
-                    // 1. 현재 타겟이 리스트 인풋(.content)인 경우만 체크
-                    if (target.matches(".content")) {
-                        ev.preventDefault(); // 기본 줄바꿈 방지
-
-                        const allInputs = [
-                            ...document.querySelectorAll(".content"),
-                        ];
-                        const currentIndex = allInputs.indexOf(target);
-                        const isLast = currentIndex === allInputs.length - 1;
-
-                        if (isLast) {
-                            // 마지막 인풋이면 새로 추가!
-                            addInput();
-                        } else {
+                    if (isLast) {
+                        // 마지막 인풋이면 새로 추가!
+                        addInput();
+                    } else {
                             // 중간 인풋이면 다음 인풋으로 포커스 이동!
                             /** @type {HTMLInputElement} */ (
-                                allInputs[currentIndex + 1]
-                            ).focus();
+                            allInputs[currentIndex + 1]
+                        ).focus();
                             /** @type {HTMLInputElement} */ (
-                                allInputs[currentIndex + 1]
-                            ).select();
-                        }
-                    }
-                    // 2. 제목 인풋(.input)에서 Enter를 쳤을 때도 첫 번째 내용으로 이동하게 하면 금상첨화!
-                    else if (target.matches(".input")) {
-                        ev.preventDefault();
-                        const firstContent = /** @type {HTMLInputElement} */ (
-                            document.querySelector(".content")
-                        );
-                        if (firstContent) {
-                            firstContent.focus();
-                            firstContent.select();
-                        } else {
-                            addInput(); // 내용이 하나도 없으면 새로 만듦
-                        }
+                            allInputs[currentIndex + 1]
+                        ).select();
                     }
                 }
-                if (ev.key === "ArrowUp") {
-                    const target = /** @type {HTMLInputElement} */ (ev.target);
+                // 2. 제목 인풋(.input)에서 Enter를 쳤을 때도 첫 번째 내용으로 이동하게 하면 금상첨화!
+                else if (target.matches(".input")) {
+                    ev.preventDefault();
+                    const firstContent = /** @type {HTMLInputElement} */ (
+                        document.querySelector(".content")
+                    );
+                    if (firstContent) {
+                        firstContent.focus();
+                        firstContent.select();
+                    } else {
+                        addInput(); // 내용이 하나도 없으면 새로 만듦
+                    }
+                }
+            }
+            if (ev.key === "ArrowUp") {
+                const target = /** @type {HTMLInputElement} */ (ev.target);
 
-                    // 1. 현재 타겟이 리스트 인풋(.content)인 경우만 체크
-                    if (target.matches(".content")) {
-                        ev.preventDefault(); // 기본 줄바꿈 방지
+                // 1. 현재 타겟이 리스트 인풋(.content)인 경우만 체크
+                if (target.matches(".content")) {
+                    ev.preventDefault(); // 기본 줄바꿈 방지
 
-                        const allInputs = [
-                            ...document.querySelectorAll(".content"),
-                        ];
-                        const currentIndex = allInputs.indexOf(target);
-                        const isFirst = currentIndex === 0;
+                    const allInputs = [
+                        ...document.querySelectorAll(".content"),
+                    ];
+                    const currentIndex = allInputs.indexOf(target);
+                    const isFirst = currentIndex === 0;
 
-                        if (isFirst) {
-                            input_main.focus();
-                            input_main.select();
-                        } else {
+                    if (isFirst) {
+                        input_main.focus();
+                        input_main.select();
+                    } else {
                             // 중간 인풋이면 다음 인풋으로 포커스 이동!
                             /** @type {HTMLInputElement} */ (
-                                allInputs[currentIndex - 1]
-                            ).focus();
+                            allInputs[currentIndex - 1]
+                        ).focus();
                             /** @type {HTMLInputElement} */ (
-                                allInputs[currentIndex - 1]
-                            ).select();
-                        }
+                            allInputs[currentIndex - 1]
+                        ).select();
                     }
                 }
-                if (ev.key === "Delete") {
-                    ev.preventDefault();
-                    // if (contentData.length <= 1) return;
-                    if (ev.target === input_main) {
-                        input_main.value = "";
-                        contentData[0] = "";
-                        render();
-                        renderLeft();
-                        return;
-                    }
-
-                    // 데이터 삭제 (마지막 요소 제거)
-                    contentData.pop();
-
-                    // 양쪽 화면 모두 갱신
+            }
+            if (ev.key === "Delete") {
+                ev.preventDefault();
+                // if (contentData.length <= 1) return;
+                if (ev.target === input_main) {
+                    input_main.value = "";
+                    contentData[0] = "";
                     render();
                     renderLeft();
-
-                    const lastInput =
-                        /** @type {HTMLInputElement} */ (
-                            document.querySelector(".content:last-child")
-                        ) || input_main;
-                    lastInput.focus();
-                    if ("select" in lastInput) lastInput.select();
+                    return;
                 }
+
+                // 데이터 삭제 (마지막 요소 제거)
+                contentData.pop();
+
+                // 양쪽 화면 모두 갱신
+                render();
+                renderLeft();
+
+                const lastInput =
+                        /** @type {HTMLInputElement} */ (
+                        document.querySelector(".content:last-child")
+                    ) || input_main;
+                lastInput.focus();
+                if ("select" in lastInput) lastInput.select();
+            }
+        });
+
+        // 특정 문자열을 바로 클립보드에 복사
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                alert(`글이 클립보드에 저장되었습니다.`);
+            });
+        }
+        function smartCopy(text) {
+            // 1. 임시 textarea 생성 (상남자의 비밀 병기)
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+
+            // 화면에 안 보이게 숨기기 (하지만 존재는 해야 함)
+            textArea.style.position = "absolute";
+            textArea.style.left = "-9999px";
+            textArea.style.top = "0";
+            textArea.style.opacity = "0";
+            textArea.style.pointerEvents = "none";
+            document.body.appendChild(textArea);
+
+            // 2. 텍스트 선택 및 복사 (모바일 핵심 로직)
+            textArea.select();
+            textArea.setSelectionRange(0, 99999); // 아이폰(iOS) 대응용
+
+            try {
+                const successful = document.execCommand("copy");
+                if (successful) alert("복사 성공! 🚀");
+                else throw new Error();
+            } catch (err) {
+                // 마지막 수단: 직접 선택 유도
+                alert("복사 실패. 텍스트를 길게 눌러 직접 복사해주세요.");
+            }
+
+            document.body.removeChild(textArea);
+        }
+        document
+            .querySelector("#copy-btn")
+            ?.addEventListener("click", (ev) => {
+                // copyToClipboard(display.textContent);
+                smartCopy(display.textContent);
             });
 
-            // 특정 문자열을 바로 클립보드에 복사
-            function copyToClipboard(text) {
-                navigator.clipboard.writeText(text).then(() => {
-                    alert(`글이 클립보드에 저장되었습니다.`);
-                });
-            }
-            function smartCopy(text) {
-                // 1. 임시 textarea 생성 (상남자의 비밀 병기)
-                const textArea = document.createElement("textarea");
-                textArea.value = text;
+        // 초기 실행
+        render();
+    </script>
+</body>
 
-                // 화면에 안 보이게 숨기기 (하지만 존재는 해야 함)
-                textArea.style.position = "absolute";
-                textArea.style.left = "-9999px";
-                textArea.style.top = "0";
-                textArea.style.opacity = "0";
-                textArea.style.pointerEvents = "none";
-                document.body.appendChild(textArea);
-
-                // 2. 텍스트 선택 및 복사 (모바일 핵심 로직)
-                textArea.select();
-                textArea.setSelectionRange(0, 99999); // 아이폰(iOS) 대응용
-
-                try {
-                    const successful = document.execCommand("copy");
-                    if (successful) alert("복사 성공! 🚀");
-                    else throw new Error();
-                } catch (err) {
-                    // 마지막 수단: 직접 선택 유도
-                    alert("복사 실패. 텍스트를 길게 눌러 직접 복사해주세요.");
-                }
-
-                document.body.removeChild(textArea);
-            }
-            document
-                .querySelector("#copy-btn")
-                ?.addEventListener("click", (ev) => {
-                    // copyToClipboard(display.textContent);
-                    smartCopy(display.textContent);
-                });
-
-            // 초기 실행
-            render();
-        </script>
-    </body>
 </html>
