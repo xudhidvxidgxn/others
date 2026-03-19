@@ -289,7 +289,9 @@
 
             const no_input = /** @type {HTMLInputElement} */ (form.querySelector("#no"));
             const submit_btn = /** @type {HTMLButtonElement} */ (form.querySelector('button[type="submit"]'));
+            const title_input = /** @type {HTMLInputElement} */ (form.querySelector("#title"));
             no_input.value = val;
+            title_input.value = "";
             submit_btn.innerText = '추가하기';
             modal_area.dataset.idx = "";
             modal_area.className = 'activated insert';
