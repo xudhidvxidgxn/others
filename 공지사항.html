@@ -116,7 +116,7 @@
                 const listItems = contentData
                     .slice(1)
                     .map((text, idx, arr) => {
-                        let idx_text =  "0".repeat((String(arr.length).length) - String(idx + 1).length) + String(idx + 1);
+                        let idx_text =  "0".repeat(String(arr.length).length - String(idx + 1).length) + String(idx + 1);
                         return `    ${idx_text}. ${text}`;
                     })
                     .join("\n");
