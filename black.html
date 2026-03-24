@@ -2281,8 +2281,8 @@
 
                 // 시간순(최신)
                 const getNumberFromHref = (element) => {
-                    const href = element.querySelector("a").getAttribute("href");
-                    const match = href.match(/webtoon\/(\d+)\.html/);
+                    const href = element.querySelector("a")?.getAttribute("href");
+                    const match = href?.match(/webtoon\/(\d+)\.html/);
                     return match ? parseInt(match[1], 10) : 0;
                 };
 
