@@ -115,7 +115,10 @@
             if (contentData.length > 1) {
                 const listItems = contentData
                     .slice(1)
-                    .map((text, idx) => `    ${idx + 1}. ${text}`)
+                    .map((text, idx, arr) => {
+                        let idx_text =  "0".repeat((String(arr.length).length) - String(idx + 1).length) + String(idx + 1);
+                        return `    ${idx_text}. ${text}`;
+                    })
                     .join("\n");
                 resultHTML += listItems;
             }
