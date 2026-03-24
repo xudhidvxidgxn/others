@@ -101,16 +101,10 @@
          * * 0번 인덱스는 제목, 그 이후는 리스트 아이템입니다. */
         let contentData = [""];
 
-        const input_main = /** @type {HTMLInputElement} */ (
-            document.querySelector(".input")
-        );
+        const input_main = /** @type {HTMLInputElement} */ (document.querySelector(".input"));
         const content_list = document.querySelector(".content-list");
-        const display = /** @type {HTMLPreElement} */ (
-            document.querySelector("#display")
-        );
-        const input_temp = /** @type {HTMLTemplateElement} */ (
-            document.querySelector("#input-temp")
-        );
+        const display = /** @type {HTMLPreElement} */ (document.querySelector("#display"));
+        const input_temp = /** @type {HTMLTemplateElement} */ (document.querySelector("#input-temp"));
 
         /** * [RENDER] 데이터를 바탕으로 오른쪽 결과창을 그립니다. */
         function render() {
@@ -137,12 +131,10 @@
             render();
 
             // 마지막 인풋에 포커스
-            const new_input = /** @type {HTMLInputElement} */ (
-                document.querySelector(".content:last-child")
-            );
+            const new_input = /** @type {HTMLInputElement} */ (document.querySelector(".content:last-child"));
             new_input?.focus();
         }
-        
+
         /** [RENDER-LEFT] 데이터 배열의 길이에 맞춰 인풋창 리스트를 쇄신함 */
         function renderLeft() {
             // 0번(제목) 제외한 데이터로 인풋 생성
@@ -198,9 +190,7 @@
                 if (target.matches(".content")) {
                     ev.preventDefault(); // 기본 줄바꿈 방지
 
-                    const allInputs = [
-                        ...document.querySelectorAll(".content"),
-                    ];
+                    const allInputs = [...document.querySelectorAll(".content")];
                     const currentIndex = allInputs.indexOf(target);
                     const isLast = currentIndex === allInputs.length - 1;
 
@@ -208,21 +198,15 @@
                         // 마지막 인풋이면 새로 추가!
                         addInput();
                     } else {
-                            // 중간 인풋이면 다음 인풋으로 포커스 이동!
-                            /** @type {HTMLInputElement} */ (
-                            allInputs[currentIndex + 1]
-                        ).focus();
-                            /** @type {HTMLInputElement} */ (
-                            allInputs[currentIndex + 1]
-                        ).select();
+                        // 중간 인풋이면 다음 인풋으로 포커스 이동!
+                        /** @type {HTMLInputElement} */ (allInputs[currentIndex + 1]).focus();
+                        /** @type {HTMLInputElement} */ (allInputs[currentIndex + 1]).select();
                     }
                 }
                 // 2. 제목 인풋(.input)에서 Enter를 쳤을 때도 첫 번째 내용으로 이동하게 하면 금상첨화!
                 else if (target.matches(".input")) {
                     ev.preventDefault();
-                    const firstContent = /** @type {HTMLInputElement} */ (
-                        document.querySelector(".content")
-                    );
+                    const firstContent = /** @type {HTMLInputElement} */ (document.querySelector(".content"));
                     if (firstContent) {
                         firstContent.focus();
                         firstContent.select();
@@ -238,9 +222,7 @@
                 if (target.matches(".content")) {
                     ev.preventDefault(); // 기본 줄바꿈 방지
 
-                    const allInputs = [
-                        ...document.querySelectorAll(".content"),
-                    ];
+                    const allInputs = [...document.querySelectorAll(".content")];
                     const currentIndex = allInputs.indexOf(target);
                     const isFirst = currentIndex === 0;
 
@@ -248,13 +230,9 @@
                         input_main.focus();
                         input_main.select();
                     } else {
-                            // 중간 인풋이면 다음 인풋으로 포커스 이동!
-                            /** @type {HTMLInputElement} */ (
-                            allInputs[currentIndex - 1]
-                        ).focus();
-                            /** @type {HTMLInputElement} */ (
-                            allInputs[currentIndex - 1]
-                        ).select();
+                        // 중간 인풋이면 다음 인풋으로 포커스 이동!
+                        /** @type {HTMLInputElement} */ (allInputs[currentIndex - 1]).focus();
+                        /** @type {HTMLInputElement} */ (allInputs[currentIndex - 1]).select();
                     }
                 }
             }
@@ -276,10 +254,7 @@
                 render();
                 renderLeft();
 
-                const lastInput =
-                        /** @type {HTMLInputElement} */ (
-                        document.querySelector(".content:last-child")
-                    ) || input_main;
+                const lastInput = /** @type {HTMLInputElement} */ (document.querySelector(".content:last-child")) || input_main;
                 lastInput.focus();
                 if ("select" in lastInput) lastInput.select();
             }
@@ -319,12 +294,10 @@
 
             document.body.removeChild(textArea);
         }
-        document
-            .querySelector("#copy-btn")
-            ?.addEventListener("click", (ev) => {
-                // copyToClipboard(display.textContent);
-                smartCopy(display.textContent);
-            });
+        document.querySelector("#copy-btn")?.addEventListener("click", (ev) => {
+            // copyToClipboard(display.textContent);
+            smartCopy(display.textContent);
+        });
 
         // 초기 실행
         render();
