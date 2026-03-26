@@ -46,17 +46,17 @@
             max-width: 600px;
             white-space: pre-wrap;
             text-align: center;
-            font-size: 36px;
+            font-size: 2rem;
             /* background-color: rgb(0, 0, 0, 0.2); */
         }
     </style>
 </head>
 <body>
     <div id="inputs">
-        <input type="text" id="x" inputmode="numeric" maxlength="5" autofocus>
-        <input type="text" id="y" inputmode="numeric" maxlength="5">
+        <input type="text" id="x" inputmode="numeric" maxlength="10" autofocus>
+        <input type="text" id="y" inputmode="numeric" maxlength="10">
     </div>
-    <pre id="display">2 * 1 = 2</pre>
+    <pre id="display">여기에 표시됩니다.</pre>
     <script>
         // @ts-check
         const inputs = /** @type {HTMLDivElement} */ (document.querySelector("#inputs"));
@@ -72,16 +72,16 @@
             const x = Number(x_input.value || "2");
             const y = Number(y_input.value || "1");
 
-            display.textContent = `${x} * ${y} = ${(x * y).toLocaleString()}`;
+            display.textContent = `${x} * ${y} \n= ${(x * y).toLocaleString()}`;
         })
 
         inputs.addEventListener("keydown", (ev) => {
-            if (ev.key === "Tab") {
-                ev.preventDefault();
-                if (ev.target === x_input) y_input.focus();
-                if (ev.target === y_input) x_input.focus();
-            }
-        });
+                if (ev.key === "Tab") {
+                    ev.preventDefault();
+                    if (ev.target === x_input) { y_input.focus(); y_input.select(); }
+                    if (ev.target === y_input) { x_input.focus(); x_input.select(); }
+                }
+            });
 
     </script>
     <!-- <script src="1/1.js"></script> -->
