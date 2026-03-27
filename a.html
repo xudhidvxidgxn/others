@@ -22,7 +22,7 @@
             min-height: 100vh;
             padding: 20px;
         }
-        
+
         #inputs {
             display: flex;
             gap: 5px;
@@ -76,7 +76,7 @@
             const x = BigInt(x_input.value || "2");
             const y = BigInt(y_input.value || "1");
 
-            display.textContent = `${x} ** ${y} \n= ${formatWithComma(x ** y)}`;
+            display.textContent = `${x} * ${y} \n= ${formatWithComma(x * y)}`;
         });
 
         inputs.addEventListener("keydown", (ev) => {
