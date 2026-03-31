@@ -42,7 +42,7 @@
 DDL : Database Defination Language
     - 테이블 생성 : CREATE TABLE
     - 테이블 변경 : ALTER TABLE
-    - 테이블 삭제 : DELETE TABLE
+    - 테이블 삭제 : DROP TABLE
 DML : Database Manipulation Language 
     - 데이터 검색 : SELECT 
     - 데이터 삽입 : INSERT
