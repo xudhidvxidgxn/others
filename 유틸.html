@@ -45,6 +45,10 @@
             font-size: .9rem;
             font-weight: initial;
         }
+        .attr {
+            align-self: flex-start;
+            padding-top: 20px;
+        }
         .title {font-weight: 600;}
         .subtitle {
             margin-left: 1.8rem;
@@ -111,6 +115,46 @@
         </a>
         <a href="https://www.blackmagicdesign.com/kr/products/davinciresolve" class="link">
             DaVinci Resolve
+            <div class="attr">스트리밍
+                <ul class="title">스트리밍 설정
+                    <li class="subtitle">비디오 인코더 : NVIDIA NVENC H.264</li>
+                    <li class="subtitle">오디오 인코더 : FFmpeg AAC</li>
+                    <li class="subtitle">출력 배율 재조정 : 란초스 (1080)</li>
+                    <li class="subtitle">자동 파일 분할 : 크기로 나누기 (290MB)</li>
+                </ul>
+                <ul class="title">인코딩 설정
+                    <li class="subtitle">전송률 제어 : 고정 비트레이트 (CBR)</li>
+                    <li class="subtitle">비트레이트 : 10000Kbps (8000 ~ )</li>
+                    <li class="subtitle">키프레임 간격 : 2s</li>
+                    <li class="subtitle">프리셋 : P5</li>
+                    <li class="subtitle">조정 : 높은 품질</li>
+                    <li class="subtitle">멀티패스 모드 : 2패스 (1/4 해상도)</li>
+                    <li class="subtitle">프로파일 : high</li>
+                    <li class="subtitle">적응형 양자화 : true</li>
+                    <li class="subtitle">B-프레임 : 2</li>
+                </ul>
+            </div>
+            <div class="attr">녹화
+                <ul class="title">녹화 설정
+                    <li class="subtitle">녹화 형식 : 하이브리드 mp4 (.mp4)</li>
+                    <li class="subtitle">비디오 인코더 : NVIDIA NVENC AV1</li>
+                    <li class="subtitle">오디오 인코더 : FFmpeg AAC</li>
+                    <li class="subtitle">출력 배율 재조정 : 란초스 (1080)</li>
+                    <li class="subtitle">자동 파일 분할 : 크기로 나누기 (290MB)</li>
+                </ul>
+                <ul class="title">인코딩 설정
+                    <li class="subtitle">전송률 제어 : 고정 QP (CQP)</li>
+                    <li class="subtitle">고정 QP : 40 (25~30 가능)</li>
+                    <li class="subtitle">키프레임 간격 : 4s (2s 가능)</li>
+                    <li class="subtitle">프리셋 : P7 (사양 따라 낮추기 필요)</li>
+                    <li class="subtitle">조정 : 높은 품질</li>
+                    <li class="subtitle">멀티패스 모드 : 2패스 (전체 해상도) (사양 따라 낮추기 필요)</li>
+                    <li class="subtitle">프로파일 : main (비디오 인코더 H.264인 경우 high)</li>
+                    <li class="subtitle">적응형 양자화 : true</li>
+                    <li class="subtitle">B-프레임 : 4</li>
+                    <li class="subtitle">B-프레임 참조 : 각 프레임 (EACH)</li>
+                </ul>
+            </div>
         </a>
         <a href="https://drive.usercontent.google.com/download?id=19QjgN9H8XKMVjc-EulKyki_USO9rtQfK&export=download&authuser=0" class="link">
             SoftEther VPN
