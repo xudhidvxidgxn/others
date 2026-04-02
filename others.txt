@@ -1,0 +1,41 @@
+git reset --hard origin/main
+git clean -fd
+asdf
+
+git remote remove origin
+
+Ctrl+` 눌렀을 때에 디렉토리 경로를 반드시 확인할 것(그 경로를 기준으로 그 안에 있는 것들을 포장한다는 비닐봉지 같은 느낌)
+git init <-- 이게 포장
+git remote add origin (깃 리포지토리 링크)
+git config --global user.name "your.name"
+git config --global user.email "your.email"
+git config --global user.name "xudhidvxidgxn"
+git config --global user.name "김민재"
+git config --global user.email "ys2510103@y-y.hs.kr"
+(git branch -M main) <- 한번만
+git config --global core.autocrlf true
+
+git add .
+git commit -m "커밋 메시지"
+git push -u origin main
+
+
+
+# 1단계: .git 폴더 삭제
+Remove-Item -Path "(submodule된 폴더)\.git" -Recurse -Force
+
+# 2단계: git 캐시 새로고침
+git rm --cached -r "(submodule된 폴더)"
+
+# 3단계: 다시 추가
+git add "(submodule된 폴더)"
+
+# 4단계: 커밋
+git commit -m "Fix: 폴더 submodule 복구"
+
+git push origin main
+
+git submodule add [리포URL] [폴더명]
+# 예: git submodule add https://github.com/xudhidvxidgxn/4th_subject.git "4주차 과제/4th_subject"
+
+git config --global protocol.file.allow always
