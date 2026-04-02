@@ -125,13 +125,13 @@
                 <ul class="title">인코딩 설정
                     <li class="subtitle">전송률 제어 : 고정 비트레이트 (CBR)</li>
                     <li class="subtitle">비트레이트 : 10000Kbps (8000 ~ )</li>
-                    <li class="subtitle">키프레임 간격 : 2s</li>
-                    <li class="subtitle">프리셋 : P7</li>
+                    <li class="subtitle">키프레임 간격 : 2s (기본 2s, 용량압축 4s)</li>
+                    <li class="subtitle">프리셋 : P7 (사양 따라 낮추기 필요)</li>
                     <li class="subtitle">조정 : 높은 품질</li>
-                    <li class="subtitle">멀티패스 모드 : 2패스 (전체 해상도)</li>
+                    <li class="subtitle">멀티패스 모드 : 2패스 (전체 해상도) (사양 따라 낮추기 필요)</li>
                     <li class="subtitle">프로파일 : high</li>
                     <li class="subtitle">적응형 양자화 : true</li>
-                    <li class="subtitle">B-프레임 : 4 (2 고려)</li>
+                    <li class="subtitle">B-프레임 : 4 (싱크라면 2, 용량?이라면 4)</li>
                 </ul>
             </div>
             <div class="attr">녹화
@@ -145,13 +145,13 @@
                 <ul class="title">인코딩 설정
                     <li class="subtitle">전송률 제어 : 고정 QP (CQP)</li>
                     <li class="subtitle">고정 QP : 40 (25~30 가능)</li>
-                    <li class="subtitle">키프레임 간격 : 4s (2s 가능)</li>
+                    <li class="subtitle">키프레임 간격 : 4s (기본 2s, 용량압축 4s)</li>
                     <li class="subtitle">프리셋 : P7 (사양 따라 낮추기 필요)</li>
                     <li class="subtitle">조정 : 높은 품질</li>
                     <li class="subtitle">멀티패스 모드 : 2패스 (전체 해상도) (사양 따라 낮추기 필요)</li>
                     <li class="subtitle">프로파일 : main (비디오 인코더 H.264인 경우 high)</li>
                     <li class="subtitle">적응형 양자화 : true</li>
-                    <li class="subtitle">B-프레임 : 4</li>
+                    <li class="subtitle">B-프레임 : 4 (싱크라면 2, 용량?최적화라면 4)</li>
                     <li class="subtitle">B-프레임 참조 : 각 프레임 (EACH)</li>
                 </ul>
             </div>
