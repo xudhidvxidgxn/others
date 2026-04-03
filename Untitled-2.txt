@@ -1,0 +1,75 @@
+HTML 
+---------- 
+a: anchor 항해
+rel: relation 
+
+
+CSS 
+---------- 
+@charset "utf-8" 
+character set 문자 세트 
+
+body : 원본 
+
+여백 
+1. 밖 : margin (마빡)
+2. 안 : padding (안패) 
+
+margin 시리즈
+margin: 0 밖여백 0 
+margin: auto 중앙배치
+margin-right: 오른쪽밖여백
+
+padding: 0; 상하좌우 안여백0 
+padding-top: 20px; 위로부터 20px 안쪽여백 
+
+
+a: anchor 항해 닻 링크 
+text-decoration: none; 밑줄 제거
+
+width 가로 길이 
+height 세로 길이
+
+x-index: 수 
+수가 클수록 앞으로
+1. header 
+2. .modal 
+modal의 z-index을 높여 더 앞에 나오게 한다. 
+
+div : division
+하위요소
+
+float 시리즈 
+float: left 왼쪽에 뛰유 
+float: right 오른쪽에 띄우 
+
+overflow: hidden 
+넘친 부분 가림
+
+box-sizing: border-box; /* 여백, 테두리 같이 영역 크기 계산 */
+
+line-height: 130px; /* 세로 배치 조정 */
+
+ul 점 
+list-style: none; 점 삭제 
+
+text-align: center; /* 글자중앙정렬 */ 
+
+border: 경계선 
+solid: 실선 
+
+display: block; 전체영역클릭가능 
+display: none; 기본 숨김
+
+:hover 마우스오버했을때 생기는 효과 
+
+
+#--------------------
+- 내가 너희를 과대평가한 것 같다 1학년때 뒤에서 보는데 태현쌤 수업 나는 어려웠거든- 근데 그걸 잘하길래? 이것도 할 수 있을 거라 생각했다 
+- 나는 알려줄 준비가 되어 있는데 따지기만 하면 그럴 수가 없다 
+- 여백은 3학년 선배들 이렇게 외웠다 
+- 선생님이 영어가 상위 1%여서 미안해~ 코딩은 너희가 더 잘할지 몰라도 영어는 전국 1%였어~
+- 의대갈 성적이었는데 너희 열받게, 내 기준에서 했네
+- 초등학교 때 책상 막 38선이래 이거 넘어가면 숨겨버리는 그런 거야 (overflow: hidden)
+- 예산 넘치지 않게 그렇게 해주세요 가 box-sizing: border-box야 (box-sizing: border-box)
+- 적은 것도 나중에 올려 줄 테니까 잘 들어 (text-align)
