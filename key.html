@@ -47,7 +47,7 @@
     <script>
         const display = document.querySelector("#display");
         window.addEventListener("keydown", (ev) => {
-            if(ev.key === "Escape") {display.textContent = "키 표시 (Escape)"; return;}
+            if(ev.key === "Escape") {ev.preventDefault(); display.textContent = "키 표시 (Escape)"; return;}
             if(ev.key === 'F12') return;
             if(ev.key === 'F5') return;
             ev.preventDefault();
