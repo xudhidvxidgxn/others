@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+        html, body {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            min-height: 100vh;
+        }
+        body {
+            align-items: center;
+            justify-content: center;
+        }
+        #display {
+            text-align: center;
+            font-size: 8em;
+        }
+        @media screen and (max-width: 1400px) {
+            #display {
+                font-size: 6em;
+            }
+        }
+        @media screen and (max-width: 1200px) {
+            #display {
+                font-size: 5em;
+            }
+        }
+        @media screen and (max-width: 900px) {
+            #display {
+                font-size: 3.5em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <pre id="display">키 표시</pre>
+    <script>
+        const display = document.querySelector("#display");
+        window.addEventListener("keydown", (ev) => {
+            if(ev.key === 'F12') return;
+            if(ev.key === 'F5') return;
+            ev.preventDefault();
+            let str = "";
+            if(ev.ctrlKey) str += 'Ctrl + ';
+            if(ev.shiftKey) str += 'Shift + ';
+            if(ev.altKey) str += 'Alt + ';
+            if(!(ev.key === 'Control' || ev.key === 'Shift' || ev.key === 'Alt')) {
+                if(ev.key === ' ') str += 'Space';
+                else {
+                    if(ev.key.length === 1) str += String(ev.key.toUpperCase());
+                    else str += String(ev.key); 
+                } 
+            }
+            display.textContent = str;
+        });
+    </script>
+</body>
+</html>
