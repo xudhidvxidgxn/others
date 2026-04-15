@@ -59,6 +59,7 @@
                 else {
                     if(ev.key.length === 1) str += String(ev.key.toUpperCase());
                     else str += String(ev.key); 
+                    if(ev.key.includes("Mode")) str = String(ev.key);
                 } 
             }
             display.textContent = str;
