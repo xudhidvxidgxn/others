@@ -47,6 +47,7 @@
     <script>
         const display = document.querySelector("#display");
         window.addEventListener("keydown", (ev) => {
+            if(ev.key === "Escape") {display.textContent = "키 표시 (Escape)"; return;}
             if(ev.key === 'F12') return;
             if(ev.key === 'F5') return;
             ev.preventDefault();
@@ -57,7 +58,20 @@
             if(!(ev.key === 'Control' || ev.key === 'Shift' || ev.key === 'Alt')) {
                 if(ev.key === ' ') str += 'Space';
                 else {
-                    if(ev.key.length === 1) str += String(ev.key.toUpperCase());
+                    if(ev.key === "~") str += '`';
+                    else if(ev.key === "!") str += '1';
+                    else if(ev.key === "@") str += '2';
+                    else if(ev.key === "#") str += '3';
+                    else if(ev.key === "$") str += '4';
+                    else if(ev.key === "%") str += '5';
+                    else if(ev.key === "^") str += '6';
+                    else if(ev.key === "&") str += '7';
+                    else if(ev.key === "*") str += '8';
+                    else if(ev.key === "(") str += '9';
+                    else if(ev.key === ")") str += '0';
+                    else if(ev.key === "_") str += '-';
+                    else if(ev.key === "+") str += '=';
+                    else if(ev.key.length === 1) str += String(ev.key.toUpperCase());
                     else str += String(ev.key); 
                     if(ev.key.includes("Mode")) str = String(ev.key);
                 } 
