@@ -22,6 +22,9 @@
         input {
             padding: 7px 10px;
         }
+        pre {
+            font-size: 3em;
+        }
     </style>
 </head>
 <body>
@@ -32,6 +35,20 @@
     <pre id="display"></pre>
     <script>
         const display = document.querySelector("#display");
+        const input_bar = document.querySelector(".input-bar");
+        const a = input_bar.querySelector("#a");
+        const b = input_bar.querySelector("#b");
+        
+        function calculate(x, y) {
+            if(Number(x) === NaN || Number(y) === NaN) {
+                display.textContent = 'NaN';
+                return;
+            }
+            display.textContent = Number(x) * Number(y);
+        }
+        input_bar.addEventListener("input", (ev) => {
+            calculate(a.value, b.value);
+        });
     </script>
 </body>
 </html>
