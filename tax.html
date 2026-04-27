@@ -40,11 +40,11 @@
         const b = input_bar.querySelector("#b");
         
         function calculate(x, y) {
-            if(Number(x) === NaN || Number(y) === NaN) {
+            if(isNaN(Number(x)) || isNaN(Number(y)) === NaN) {
                 display.textContent = 'NaN';
                 return;
             }
-            display.textContent = Number(x) * Number(y);
+            display.textContent = BigInt(x) * BigInt(y);
         }
         input_bar.addEventListener("input", (ev) => {
             calculate(a.value, b.value);
